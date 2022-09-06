@@ -10,5 +10,5 @@ This is a template repository for CS3219 project.
 5. Run User Service using `npm run dev`.
 
 ## Frontend
-1. Install npm packages using `npm i`.
-2. Run Frontend using `npm start`.
+1. Install npm packages using `yarn install`.
+2. Run Frontend using `yarn start`.
