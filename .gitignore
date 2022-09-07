@@ -1,2 +1,6 @@
 frontend/node_modules/
 frontend/yarn-error.log
+user-service/node_modules
+new-user-service/node_modules
+new-user-service/.env
+user-service/.env
