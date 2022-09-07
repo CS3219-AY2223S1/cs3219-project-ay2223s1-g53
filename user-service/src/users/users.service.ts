@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { CreateUserDto, FindUserDto } from './dto/create-user.dto';
+import { UserDto, FindUserDto } from './dto/create-user.dto';
 import { User, UserDocument } from './schemas/user.schema';
 
 @Injectable()
@@ -10,8 +10,22 @@ export class UsersService {
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
   ) {}
 
-  async create(createUserDto: CreateUserDto): Promise<User> {
-    const createdUser = await this.userModel.create(createUserDto);
+  async create(UserDto: UserDto): Promise<User> {
+    const existingUser = await this.userModel
+      .findOne({ username: UserDto.username })
+      .exec();
+
+    if (existingUser) {
+      throw new HttpException(
+        {
+          status: HttpStatus.BAD_REQUEST,
+          error: 'This username already exists',
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const createdUser = await this.userModel.create(UserDto);
 
     return createdUser;
   }
