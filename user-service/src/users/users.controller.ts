@@ -1,22 +1,15 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Post,
-  HttpStatus,
-  HttpException,
-} from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { UserDto, FindUserDto } from './dto/create-user.dto';
-import { User } from './schemas/user.schema';
+import { UserDto, FindUserDto } from './dto/user.dto';
+import { User, SanitizedUser } from 'src/types/user';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly userService: UsersService) {}
 
-  @Post('create')
-  async create(@Body() UserDto: UserDto) {
-    await this.userService.create(UserDto);
+  @Post('register')
+  async create(@Body() UserDto: UserDto): Promise<SanitizedUser> {
+    return this.userService.create(UserDto);
   }
 
   @Get('get')
@@ -36,6 +29,6 @@ export class UsersController {
 
   @Post('login')
   async login(@Body() userDto: UserDto) {
-    return userDto;
+    return this.userService.checkLogin(userDto);
   }
 }
