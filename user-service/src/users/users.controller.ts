@@ -21,14 +21,4 @@ export class UsersController {
   async findOne(@Body() findUserDto: FindUserDto): Promise<User> {
     return this.userService.findOne(findUserDto);
   }
-
-  @Post('delete')
-  async delete(@Body() findUserDto: FindUserDto) {
-    return this.userService.delete(findUserDto);
-  }
-
-  @Post('login')
-  async login(@Body() userDto: UserDto) {
-    return this.userService.checkLogin(userDto);
-  }
 }

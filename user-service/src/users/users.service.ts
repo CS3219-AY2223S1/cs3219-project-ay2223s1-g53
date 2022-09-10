@@ -3,17 +3,15 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { UserDto, FindUserDto } from './dto/user.dto';
 import { User, SanitizedUser } from 'src/types/user';
-import { sign } from 'jsonwebtoken';
-import { compare } from 'bcrypt';
 import { UserResponseBody } from 'src/types/responses';
-import { Payload } from 'src/types/payload';
+import signPayload from 'src/libs/signPayload';
 
 @Injectable()
 export class UsersService {
   constructor(@InjectModel('User') private userModel: Model<User>) {}
 
   async create(UserDto: UserDto): Promise<UserResponseBody> {
-    const existingUser = await this.userModel
+    const existingUser: User = await this.userModel
       .findOne({ username: UserDto.username })
       .exec();
 
@@ -27,9 +25,10 @@ export class UsersService {
       );
     }
 
-    const createdUser = await this.userModel.create(UserDto);
-    const sanitizedUser = this.sanitizeUser(createdUser);
-    const token = this.signPayload(sanitizedUser, '7d');
+    const createdUser: User = await this.userModel.create(UserDto);
+    const sanitizedUser: SanitizedUser = this.sanitizeUser(createdUser);
+    const userId: number = await this.userModel.countDocuments().exec();
+    const token = signPayload({ ...sanitizedUser, sub: userId }, '7d');
     return { username: sanitizedUser.username, jwt: token };
   }
 
@@ -39,50 +38,6 @@ export class UsersService {
 
   async findOne(findUserDto: FindUserDto): Promise<User | undefined> {
     return this.userModel.findOne({ username: findUserDto.username }).exec();
-  }
-
-  async delete(findUserDto: FindUserDto) {
-    const deletedUser = await this.userModel
-      .deleteOne({ username: findUserDto.username })
-      .exec();
-    return deletedUser;
-  }
-
-  async checkLogin(userDto: UserDto): Promise<UserResponseBody> {
-    const user = await this.findOne(userDto);
-    // if user does not exist in db, throw error
-    if (!user) {
-      throw new HttpException(
-        {
-          status: HttpStatus.BAD_REQUEST,
-          error: 'This user does not exist',
-        },
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
-    // if user entered wrong password, throw error
-    const isValidPassword = await compare(user.password, userDto.password);
-
-    if (isValidPassword) {
-      const sanitized = this.sanitizeUser(user);
-      const token = this.signPayload(sanitized, '7d');
-      return { username: sanitized.username, jwt: token };
-    } else {
-      throw new HttpException(
-        {
-          status: HttpStatus.BAD_REQUEST,
-          error: 'Your password is invalid',
-        },
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-  }
-
-  signPayload(payload: Payload, expiry: string): string {
-    return sign(payload, process.env.SECRET_KEY, {
-      expiresIn: expiry,
-    });
   }
 
   sanitizeUser(user: User): SanitizedUser {
