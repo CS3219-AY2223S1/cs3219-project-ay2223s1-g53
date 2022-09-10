@@ -37,7 +37,7 @@ export class UsersService {
     return this.userModel.find().exec();
   }
 
-  async findOne(findUserDto: FindUserDto): Promise<User> {
+  async findOne(findUserDto: FindUserDto): Promise<User | undefined> {
     return this.userModel.findOne({ username: findUserDto.username }).exec();
   }
 
