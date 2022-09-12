@@ -15,6 +15,7 @@ import { URL_USER_SVC } from "../configs";
 import { STATUS_CODE_CONFLICT, STATUS_CODE_CREATED } from "../constants";
 import { Link } from "react-router-dom";
 
+
 function SignupPage() {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -97,6 +98,7 @@ function SignupPage() {
         </DialogActions>
       </Dialog>
     </Box>
+
   );
 }
 

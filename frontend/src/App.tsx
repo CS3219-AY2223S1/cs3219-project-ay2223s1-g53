@@ -6,6 +6,8 @@ import {
 } from "react-router-dom";
 import SignupPage from "./containers/SignupPage";
 import DifficultyPage from "./containers/DifficultyPage";
+import LoadingPage from "./containers/LoadingPage";
+
 import { Box } from "@mui/material";
 
 function App() {
@@ -17,6 +19,7 @@ function App() {
             <Route path="/" element={<Navigate replace to="/signup" />}></Route>
             <Route path="/signup" element={<SignupPage />} />
             <Route path="/difficulty" element={<DifficultyPage />} />
+            <Route path="/loading" element={<LoadingPage />} />
           </Routes>
         </Router>
       </Box>
