@@ -1,6 +1,5 @@
 import { Controller, Request, Post, UseGuards, Get } from '@nestjs/common';
 import { AuthService } from './auth/auth.service';
-import { JwtAuthGuard } from './auth/guards/auth.jwt-guard';
 import { LocalAuthGuard } from './auth/guards/auth.local-guard';
 @Controller()
 export class AppController {
@@ -9,12 +8,12 @@ export class AppController {
   @UseGuards(LocalAuthGuard)
   @Post('auth/login')
   async login(@Request() req) {
-    return this.authService.login(req.body);
+    return this.authService.login(req.user);
   }
 
-  @UseGuards(JwtAuthGuard)
-  @Get('profile')
-  getProfile(@Request() req) {
-    return req.body;
+  @Get('auth/logout')
+  async logout(@Request() req) {
+    req.session.destroy();
+    return { msg: 'The user session has ended' };
   }
 }

@@ -1,4 +1,4 @@
 export interface UserResponseBody {
   username: string;
-  jwt: string;
+  access_token: string;
 }

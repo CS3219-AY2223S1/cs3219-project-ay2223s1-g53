@@ -1,4 +1,9 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import {
+  Injectable,
+  HttpException,
+  HttpStatus,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { UserDto, FindUserDto } from './dto/user.dto';
@@ -16,20 +21,13 @@ export class UsersService {
       .exec();
 
     if (existingUser) {
-      throw new HttpException(
-        {
-          status: HttpStatus.BAD_REQUEST,
-          error: 'This username already exists',
-        },
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new BadRequestException('This user already exists.');
     }
 
     const createdUser: User = await this.userModel.create(UserDto);
     const sanitizedUser: SanitizedUser = this.sanitizeUser(createdUser);
-    const userId: number = await this.userModel.countDocuments().exec();
-    const token = signPayload({ ...sanitizedUser, sub: userId }, '7d');
-    return { username: sanitizedUser.username, jwt: token };
+    const token = signPayload(sanitizedUser, '7d');
+    return { username: sanitizedUser.username, access_token: token };
   }
 
   async findAll(): Promise<User[]> {
