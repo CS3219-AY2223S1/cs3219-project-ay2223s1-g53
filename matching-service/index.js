@@ -22,10 +22,11 @@ const io = new Server(httpServer, {
   },
 });
 
-io.on("matchEvent", () => {
-  console.log("connect");
-  io.emit("matchsuccess");
-  console.log("fail");
+io.on("connection", (socket) => {
+  socket.on("matchEvent", () => {
+    console.log("hi"); // world
+    socket.emit("matchsuccess");
+  });
 });
 
 httpServer.listen(8001);
