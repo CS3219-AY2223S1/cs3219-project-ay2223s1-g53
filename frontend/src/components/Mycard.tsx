@@ -9,8 +9,14 @@ interface CardProps {
   title: string;
   body: string;
   buttontext: string;
+  onClick?: React.MouseEventHandler;
 }
-export default function Mycard({ title, body, buttontext }: CardProps) {
+export default function Mycard({
+  title,
+  body,
+  buttontext,
+  onClick,
+}: CardProps) {
   return (
     <Card>
       <CardHeader
@@ -26,7 +32,7 @@ export default function Mycard({ title, body, buttontext }: CardProps) {
         </Typography>
       </CardContent>
       <CardActions>
-        <Button fullWidth variant={"outlined"}>
+        <Button fullWidth variant={"outlined"} onClick={onClick}>
           {buttontext}
         </Button>
       </CardActions>

@@ -11,7 +11,7 @@ export default function MyTimer() {
       setSeconds(seconds - 1);
       setTimer(timer - 1);
 
-      if (seconds <= 0) {
+      if (seconds <= 1) {
         // change this to an error page / alert n redirect to difficulty page
         window.location.replace("/difficulty");
       }
@@ -29,7 +29,7 @@ export default function MyTimer() {
       ) : (
         <div>
           <span className="time">{seconds}</span>
-          <span className="label">Seconds</span>
+          <span className="label"> Seconds</span>
         </div>
       )}
     </div>
