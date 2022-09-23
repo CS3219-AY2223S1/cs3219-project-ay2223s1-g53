@@ -35,7 +35,7 @@ export class UsersController {
 
   @UseGuards(AuthenticatedGuard)
   @Post('delete')
-  async delete(@Request() req) {
+  async delete(@Request() req: Request) {
     return this.userService.delete(req);
   }
 }
