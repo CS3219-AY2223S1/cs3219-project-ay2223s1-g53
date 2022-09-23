@@ -1,4 +1,11 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UserDto, FindUserDto } from './dto/user.dto';
 import { User } from 'src/types/user';
@@ -24,5 +31,11 @@ export class UsersController {
   @Post('get/user')
   async findOne(@Body() findUserDto: FindUserDto): Promise<User> {
     return this.userService.findOne(findUserDto);
+  }
+
+  @UseGuards(AuthenticatedGuard)
+  @Post('delete')
+  async delete(@Request() req) {
+    return this.userService.delete(req);
   }
 }

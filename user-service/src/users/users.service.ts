@@ -1,9 +1,4 @@
-import {
-  Injectable,
-  HttpException,
-  HttpStatus,
-  BadRequestException,
-} from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { UserDto, FindUserDto } from './dto/user.dto';
@@ -43,5 +38,12 @@ export class UsersService {
     delete sanitized.password;
 
     return sanitized;
+  }
+
+  async delete(req) {
+    console.log(typeof req);
+    this.userModel.deleteOne({ username: req.user._doc.username }).exec();
+    req.session.destroy();
+    return `successfully deleted ${req.user._doc.username}`;
   }
 }
