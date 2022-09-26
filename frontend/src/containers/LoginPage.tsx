@@ -13,7 +13,8 @@ import {
 import { useState } from "react";
 import axios from "axios";
 import { URL_USER_SVC } from "../configs";
-import { STATUS_CODE_CONFLICT, STATUS_CODE_INCORRECT } from "../constants";
+import { STATUS_CODE_INCORRECT } from "../constants";
+const jwt = require("jsonwebtoken");
 
 function LoginPage() {
   const [username, setUsername] = useState<string>("");
@@ -21,6 +22,21 @@ function LoginPage() {
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const [dialogTitle, setDialogTitle] = useState<string>("");
   const [dialogMsg, setDialogMsg] = useState<string>("");
+
+  const authorization = (req, res, next) => {
+    const token = req.cookies.access_token;
+    if (!token) {
+      return res.sendStatus(403);
+    }
+    try {
+      const data = jwt.verify(token, "YOUR_SECRET_KEY");
+      req.userId = data.id;
+      req.userRole = data.role;
+      return next();
+    } catch {
+      return res.sendStatus(403);
+    }
+  };
 
   const handleLogin = async () => {
     const res = await axios

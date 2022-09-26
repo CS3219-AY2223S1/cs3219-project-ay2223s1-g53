@@ -23,8 +23,8 @@ const io = new Server(httpServer, {
 });
 
 io.on("connection", (socket) => {
-  socket.on("matchEvent", () => {
-    console.log("hi"); // world
+  socket.on("matchEvent", (arg) => {
+    console.log(arg); // world
     socket.emit("matchsuccess");
   });
 });

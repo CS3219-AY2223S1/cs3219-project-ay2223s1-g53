@@ -13,6 +13,7 @@ const Separator = styled.span`
 export default function DifficultyPage() {
   const [loading, setLoading] = useState(false);
   const [count, setCount] = useState(0);
+  const [difficulty, setDifficulty] = useState("");
 
   const socket = io("http://localhost:8001", {
     timeout: 10000,
@@ -21,15 +22,19 @@ export default function DifficultyPage() {
 
   const easyHandleClick = (event: React.MouseEvent<HTMLElement>) => {
     setLoading(true);
+    setDifficulty("easy");
   };
 
   const medHandleClick = (event: React.MouseEvent<HTMLElement>) => {
     setLoading(true);
     console.log("m");
+    setDifficulty("medium");
   };
 
   const hardHandleClick = (event: React.MouseEvent<HTMLElement>) => {
     setLoading(true);
+    setDifficulty("hard");
+    console.log(difficulty);
     console.log("h");
   };
 
@@ -38,7 +43,7 @@ export default function DifficultyPage() {
       socket.connect();
 
       socket.on("connect", () => {
-        socket.emit("matchEvent");
+        socket.emit("matchEvent", difficulty);
         console.log("match");
       });
 
