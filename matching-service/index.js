@@ -20,4 +20,4 @@ io.on("connection", (socket) => {
   buildMatch(socket);
 });
 
-io.listen(3000);
+io.listen(3002);

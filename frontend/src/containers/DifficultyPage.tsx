@@ -16,7 +16,7 @@ export default function DifficultyPage() {
   const [difficulty, setDifficulty] = useState("");
   const username = window.sessionStorage.getItem("username");
 
-  const socket = io("http://localhost:8001", {
+  const socket = io("http://localhost:3002", {
     timeout: 10000,
     transports: ["websocket"],
   });
@@ -44,17 +44,18 @@ export default function DifficultyPage() {
       socket.connect();
 
       socket.on("connect", () => {
-        socket.emit("matchEvent", difficulty);
+        socket.emit("match", { difficulty });
         console.log("match");
       });
 
-      socket.on("matchfail", () => {
-        window.location.replace("/difficulty");
+      socket.on("matchFail", () => {
+        // window.location.replace("/difficulty");
+        console.log("fail");
       });
 
-      socket.on("matchsuccess", () => {
-        console.log("b");
-        window.location.replace("/signup");
+      socket.on("matchSuccess", () => {
+        console.log("success");
+        window.location.replace("/success");
       });
 
       // socket.connect();

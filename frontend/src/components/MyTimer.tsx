@@ -7,6 +7,7 @@ export default function MyTimer() {
 
   useEffect(() => {
     console.log(seconds);
+
     const interval = setInterval(() => {
       setSeconds(seconds - 1);
       setTimer(timer - 1);
