@@ -4,3 +4,5 @@ user-service/node_modules
 new-user-service/node_modules
 new-user-service/.env
 user-service/.env
+matching-service/node_modules
+matching-service/.env
