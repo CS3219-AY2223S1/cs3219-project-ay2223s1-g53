@@ -14,6 +14,7 @@ export default function DifficultyPage() {
   const [loading, setLoading] = useState(false);
   const [count, setCount] = useState(0);
   const [difficulty, setDifficulty] = useState("");
+  const username = window.sessionStorage.getItem("username");
 
   const socket = io("http://localhost:8001", {
     timeout: 10000,
@@ -56,7 +57,7 @@ export default function DifficultyPage() {
         window.location.replace("/signup");
       });
 
-      socket.connect();
+      // socket.connect();
     } else {
       setCount(1);
     }

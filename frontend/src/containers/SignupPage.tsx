@@ -12,8 +12,8 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import axios from "axios";
-import { URL_USER_SVC } from "../configs";
-import { STATUS_CODE_CONFLICT, STATUS_CODE_CREATED } from "../constants";
+import { URL_SIGNUP_SVC } from "../configs";
+import { STATUS_CODE_CONFLICT } from "../constants";
 import { Link } from "react-router-dom";
 
 function SignupPage() {
@@ -27,15 +27,15 @@ function SignupPage() {
   const handleSignup = async () => {
     setIsSignupSuccess(false);
     const res = await axios
-      .post(URL_USER_SVC, { username, password })
+      .post(URL_SIGNUP_SVC, { username, password })
       .catch((err) => {
         if (err.response.status === STATUS_CODE_CONFLICT) {
-          setErrorDialog("This username already exists");
+          setErrorDialog(err.response.message);
         } else {
           setErrorDialog("Please try again later");
         }
       });
-    if (res && res.status === STATUS_CODE_CREATED) {
+    if (res && res.data.username === username) {
       setSuccessDialog("Account successfully created");
       setIsSignupSuccess(true);
     }
@@ -62,7 +62,8 @@ function SignupPage() {
       direction="column"
       alignItems="center"
       justifyContent="center"
-      style={{ minHeight: "75vh" }}>
+      style={{ minHeight: "75vh" }}
+    >
       <Box display={"flex"} flexDirection={"column"} width={"30%"}>
         <Typography variant={"h3"} marginBottom={"2rem"}>
           Sign Up
