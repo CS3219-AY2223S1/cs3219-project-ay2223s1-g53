@@ -4,7 +4,10 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-import SignupPage from "./components/SignupPage";
+import SignupPage from "./containers/SignupPage";
+import LoginPage from "./containers/LoginPage";
+import DifficultyPage from "./containers/DifficultyPage";
+
 import { Box } from "@mui/material";
 
 function App() {
@@ -15,6 +18,8 @@ function App() {
           <Routes>
             <Route path="/" element={<Navigate replace to="/signup" />}></Route>
             <Route path="/signup" element={<SignupPage />} />
+            <Route path="/difficulty" element={<DifficultyPage />} />
+            <Route path="/login" element={<LoginPage />} />
           </Routes>
         </Router>
       </Box>
