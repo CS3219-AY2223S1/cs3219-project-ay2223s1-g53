@@ -14,7 +14,6 @@ export default function DifficultyPage() {
   const [loading, setLoading] = useState(false);
   const [count, setCount] = useState(0);
   const [difficulty, setDifficulty] = useState("");
-  const username = window.sessionStorage.getItem("username");
 
   const socket = io("http://localhost:3002", {
     timeout: 10000,

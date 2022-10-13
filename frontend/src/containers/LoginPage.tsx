@@ -40,7 +40,7 @@ function LoginPage() {
 
   const handleLogin = async () => {
     const res = await axios
-      .post(URL_USER_SVC, { username, password })
+      .post(URL_USER_SVC, { username, password }, { withCredentials: true })
       .then((res) => {
         window.sessionStorage.setItem("username", username);
         window.location.replace("/difficulty");
