@@ -14,6 +14,8 @@ import { useState } from "react";
 import axios from "axios";
 import { URL_USER_SVC } from "../configs";
 import { STATUS_CODE_INCORRECT } from "../constants";
+import { useUserContext } from "../hooks/useUserContext";
+import { useNavigate } from "react-router-dom";
 // const jwt = require("jsonwebtoken");
 
 function LoginPage() {
@@ -22,6 +24,9 @@ function LoginPage() {
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const [dialogTitle, setDialogTitle] = useState<string>("");
   const [dialogMsg, setDialogMsg] = useState<string>("");
+
+  const { updateUsername, setIsLoggedIn } = useUserContext();
+  const navigate = useNavigate();
 
   // const authorization = (req, res, next) => {
   //   const token = req.cookies.access_token;
@@ -42,8 +47,12 @@ function LoginPage() {
     const res = await axios
       .post(URL_USER_SVC, { username, password }, { withCredentials: true })
       .then((res) => {
-        window.sessionStorage.setItem("username", username);
-        window.location.replace("/difficulty");
+        const username = res.data.username;
+        if (username) {
+          updateUsername(username);
+          setIsLoggedIn();
+          navigate("/difficulty");
+        }
       })
       .catch((err) => {
         if (err.statusCode === STATUS_CODE_INCORRECT) {
@@ -75,6 +84,17 @@ function LoginPage() {
         <Typography variant={"h3"} marginBottom={"2rem"}>
           Log in
         </Typography>
+        <Button
+          onClick={() => {
+            axios
+              .get("http://localhost:3001/users/get", {
+                withCredentials: true,
+              })
+              .then((res) => console.log(res));
+          }}
+        >
+          get shit
+        </Button>
         <TextField
           label="Username"
           variant="standard"
