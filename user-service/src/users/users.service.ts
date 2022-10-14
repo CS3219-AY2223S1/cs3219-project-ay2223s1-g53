@@ -4,7 +4,6 @@ import { Model } from 'mongoose';
 import { UserDto, FindUserDto } from './dto/user.dto';
 import { User, SanitizedUser } from 'src/types/user';
 import { UserResponseBody } from 'src/types/responses';
-import signPayload from 'src/libs/signPayload';
 
 @Injectable()
 export class UsersService {
@@ -16,13 +15,16 @@ export class UsersService {
       .exec();
 
     if (existingUser) {
-      throw new BadRequestException('This user already exists.');
+      throw new BadRequestException({
+        errorCode: 3,
+        message: 'This user already exists.',
+      });
     }
 
     const createdUser: User = await this.userModel.create(UserDto);
     const sanitizedUser: SanitizedUser = this.sanitizeUser(createdUser);
-    const token = signPayload(sanitizedUser, '7d');
-    return { username: sanitizedUser.username, access_token: token };
+
+    return { username: sanitizedUser.username };
   }
 
   async findAll(): Promise<User[]> {
@@ -42,6 +44,6 @@ export class UsersService {
 
   async delete(req) {
     this.userModel.deleteOne({ username: req.user._doc.username }).exec();
-    return `successfully deleted ${req.user._doc.username}`;
+    return { message: `successfully deleted ${req.user._doc.username}` };
   }
 }
