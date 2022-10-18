@@ -9,9 +9,11 @@ import {
 } from "@mui/material";
 import styled from "styled-components";
 import { useEffect, useState } from "react";
-import { io } from "socket.io-client";
 import MyTimer from "../components/MyTimer";
 import { Link } from "react-router-dom";
+import { useUserContext } from "../hooks/useUserContext";
+import axios from "axios";
+import { io } from "socket.io-client";
 
 const Separator = styled.span`
   margin-top: 10px;
@@ -22,7 +24,7 @@ export default function DifficultyPage() {
   const [loading, setLoading] = useState(false);
   const [count, setCount] = useState(0);
   const [difficulty, setDifficulty] = useState("");
-  const username = window.sessionStorage.getItem("username");
+  const { username, updateUsername, setIsLoggedIn } = useUserContext();
 
   const socket = io("http://localhost:3002", {
     timeout: 10000,
@@ -76,26 +78,26 @@ export default function DifficultyPage() {
     <Container>
       {!loading ? (
         <Container>
-          <Box
-            justifyContent={"space-between"}
-            display={"flex"}
-            flexDirection={"row"}
+          <Button
+            onClick={() => {
+              axios.get("http://localhost:3001/auth/logout", {
+                withCredentials: true,
+              });
+              updateUsername("");
+              setIsLoggedIn();
+            }}
           >
-            <Typography variant="body2" align="center">
-              Welcome back {username}
-            </Typography>
-
-            <Button component={Link} to="/login">
-              <Typography
-                variant="button"
-                color="black"
-                sx={{ textDecoration: "underline" }}
-              >
-                Log out
-              </Typography>
-            </Button>
-          </Box>
-
+            logout
+          </Button>
+          <Button
+            onClick={() => {
+              axios.get("http://localhost:3001/users/get", {
+                withCredentials: true,
+              });
+            }}
+          >
+            get shit
+          </Button>
           <Container sx={{ pt: 5, pb: 5 }}>
             <Typography variant="h2" align="center">
               Difficulty Levels

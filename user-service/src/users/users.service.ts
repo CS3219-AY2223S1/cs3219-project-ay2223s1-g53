@@ -41,9 +41,7 @@ export class UsersService {
   }
 
   async delete(req) {
-    console.log(typeof req);
     this.userModel.deleteOne({ username: req.user._doc.username }).exec();
-    req.session.destroy();
     return `successfully deleted ${req.user._doc.username}`;
   }
 }
