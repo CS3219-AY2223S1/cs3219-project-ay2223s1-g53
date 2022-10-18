@@ -7,23 +7,32 @@ import {
 import SignupPage from "./containers/SignupPage";
 import LoginPage from "./containers/LoginPage";
 import DifficultyPage from "./containers/DifficultyPage";
-
 import { Box } from "@mui/material";
+import SuccessPage from "./containers/SuccessPage";
+import { useUserContext } from "./hooks/useUserContext";
 
 function App() {
+  const { username } = useUserContext();
   return (
-    <div className="App">
-      <Box display={"flex"} flexDirection={"column"} padding={"4rem"}>
-        <Router>
-          <Routes>
-            <Route path="/" element={<Navigate replace to="/signup" />}></Route>
-            <Route path="/signup" element={<SignupPage />} />
-            <Route path="/difficulty" element={<DifficultyPage />} />
-            <Route path="/login" element={<LoginPage />} />
-          </Routes>
-        </Router>
-      </Box>
-    </div>
+    <Box display={"flex"} flexDirection={"column"} padding={"4rem"}>
+      <Router>
+        <Routes>
+          {username !== "" ? (
+            <>
+              <Route path="/success" element={<SuccessPage />} />
+              <Route path="/difficulty" element={<DifficultyPage />} />
+              <Route path="*" element={<Navigate to="/difficulty" replace />} />
+            </>
+          ) : (
+            <>
+              <Route path="/signup" element={<SignupPage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="*" element={<Navigate to="/login" replace />} />
+            </>
+          )}
+        </Routes>
+      </Router>
+    </Box>
   );
 }
 
