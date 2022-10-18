@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import SignupPage from "./containers/SignupPage";
 import LoginPage from "./containers/LoginPage";
 import DifficultyPage from "./containers/DifficultyPage";
+import CodePage from "./containers/CodePage";
 
 import { Box } from "@mui/material";
 import SuccessPage from "./containers/SuccessPage";
@@ -22,21 +23,12 @@ function App() {
       <Box display={"flex"} flexDirection={"column"} padding={"4rem"}>
         <Router>
           <Routes>
-            <Route
-              path="/"
-              element={username ? <DifficultyPage /> : <LoginPage />}
-            />
-            {username ? (
-              <>
-                <Route path="/success" element={<SuccessPage />} />
-                <Route path="/difficulty" element={<DifficultyPage />} />
-              </>
-            ) : (
-              <>
-                <Route path="/signup" element={<SignupPage />} />
-                <Route path="/login" element={<LoginPage />} />
-              </>
-            )}
+            <Route path="/" element={<LoginPage />} />
+            <Route path="/success" element={<SuccessPage />} />
+            <Route path="/difficulty" element={<DifficultyPage />} />
+            <Route path="/signup" element={<SignupPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/code" element={<CodePage />} />
           </Routes>
         </Router>
       </Box>

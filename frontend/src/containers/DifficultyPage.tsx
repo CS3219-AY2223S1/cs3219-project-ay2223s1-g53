@@ -1,9 +1,17 @@
 import Mycard from "../components/Mycard";
-import { Grid, Typography, Container, CircularProgress } from "@mui/material";
+import {
+  Box,
+  Button,
+  Grid,
+  Typography,
+  Container,
+  CircularProgress,
+} from "@mui/material";
 import styled from "styled-components";
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import MyTimer from "../components/MyTimer";
+import { Link } from "react-router-dom";
 
 const Separator = styled.span`
   margin-top: 10px;
@@ -68,6 +76,26 @@ export default function DifficultyPage() {
     <Container>
       {!loading ? (
         <Container>
+          <Box
+            justifyContent={"space-between"}
+            display={"flex"}
+            flexDirection={"row"}
+          >
+            <Typography variant="body2" align="center">
+              Welcome back {username}
+            </Typography>
+
+            <Button component={Link} to="/login">
+              <Typography
+                variant="button"
+                color="black"
+                sx={{ textDecoration: "underline" }}
+              >
+                Log out
+              </Typography>
+            </Button>
+          </Box>
+
           <Container sx={{ pt: 5, pb: 5 }}>
             <Typography variant="h2" align="center">
               Difficulty Levels

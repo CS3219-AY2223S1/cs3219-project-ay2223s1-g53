@@ -14,6 +14,7 @@ import { useState } from "react";
 import axios from "axios";
 import { URL_USER_SVC } from "../configs";
 import { STATUS_CODE_INCORRECT } from "../constants";
+import { Link } from "react-router-dom";
 // const jwt = require("jsonwebtoken");
 
 function LoginPage() {
@@ -94,6 +95,23 @@ function LoginPage() {
         <Box display={"flex"} flexDirection={"row"} justifyContent={"flex-end"}>
           <Button variant={"outlined"} onClick={handleLogin}>
             Log in
+          </Button>
+        </Box>
+
+        <Box
+          display={"flex"}
+          flexDirection={"row"}
+          justifyContent={"space-between"}
+          pt={3}
+        >
+          <Button component={Link} to="/signup">
+            <Typography
+              variant="button"
+              color="black"
+              sx={{ textDecoration: "underline" }}
+            >
+              To Sign Up page
+            </Typography>
           </Button>
         </Box>
 
