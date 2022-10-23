@@ -1,6 +1,5 @@
 import Mycard from "../components/Mycard";
 import {
-  Box,
   Button,
   Grid,
   Typography,
@@ -9,8 +8,7 @@ import {
 } from "@mui/material";
 import styled from "styled-components";
 import { useEffect, useState } from "react";
-import MyTimer from "../components/MyTimer";
-import { Link } from "react-router-dom";
+// import MyTimer from "../components/MyTimer";
 import { useUserContext } from "../hooks/useUserContext";
 import axios from "axios";
 import { io } from "socket.io-client";
@@ -25,6 +23,8 @@ export default function DifficultyPage() {
   const [count, setCount] = useState(0);
   const [difficulty, setDifficulty] = useState("");
   const { username, updateUsername, setIsLoggedIn } = useUserContext();
+  const [seconds, setSeconds] = useState(5);
+  const [timeout, settimeout] = useState(false);
 
   const socket = io("http://localhost:3002", {
     timeout: 10000,
@@ -54,7 +54,7 @@ export default function DifficultyPage() {
       socket.connect();
 
       socket.on("connect", () => {
-        socket.emit("match", { difficulty });
+        socket.emit("match", { difficulty, username });
         console.log("match");
       });
 
@@ -73,6 +73,24 @@ export default function DifficultyPage() {
       setCount(1);
     }
   }, [loading]);
+
+  useEffect(() => {
+    if (loading) {
+      console.log(seconds);
+
+      const interval = setInterval(() => {
+        setSeconds(seconds - 1);
+
+        if (seconds <= 1) {
+          // change this to an error page / alert n redirect to difficulty page
+          socket.emit("matchFail", { username });
+          window.location.replace("/difficulty");
+        }
+      }, 1000);
+
+      return () => clearInterval(interval);
+    }
+  }, [seconds, loading]);
 
   return (
     <Container>
@@ -142,7 +160,7 @@ export default function DifficultyPage() {
           style={{ minHeight: "50vh" }}
         >
           <Grid item xs={3}>
-            <MyTimer />
+            {/* <MyTimer /> */}
           </Grid>
           <Grid item xs={3}>
             <CircularProgress />

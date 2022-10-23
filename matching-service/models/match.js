@@ -15,7 +15,8 @@ module.exports = (sequelize, DataTypes) => {
   }
   Match.init({
     socketId: DataTypes.INTEGER,
-    difficulty: DataTypes.STRING
+    difficulty: DataTypes.STRING,
+    username: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'Match',

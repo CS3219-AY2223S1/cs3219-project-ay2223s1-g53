@@ -9,12 +9,16 @@ const OrmMatch = {
     return await RepositoryMatch.getExistingById(id);
   },
 
-  createExistingMatch: async function (id, difficulty) {
-    return await RepositoryMatch.createExisting(difficulty, id);
+  createExistingMatch: async function (id, difficulty, username) {
+    return await RepositoryMatch.createExisting(difficulty, id, username);
   },
 
   deleteExistingMatchById: async function (id) {
     return await RepositoryMatch.deleteExistingById(id);
+  },
+
+  deleteExistingMatchByUsername: async function (username) {
+    return await RepositoryMatch.deleteExistingByUsername(username);
   },
 };
 

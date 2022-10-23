@@ -85,7 +85,7 @@ function LoginPage() {
         <Typography variant={"h3"} marginBottom={"2rem"}>
           Log in
         </Typography>
-        <Button
+        {/* <Button
           onClick={() => {
             axios
               .get("http://localhost:3001/users/get", {
@@ -95,7 +95,7 @@ function LoginPage() {
           }}
         >
           get shit
-        </Button>
+        </Button> */}
         <TextField
           label="Username"
           variant="standard"
