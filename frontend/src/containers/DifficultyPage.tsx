@@ -1,4 +1,6 @@
 import Mycard from "../components/Mycard";
+
+import { useNavigate } from "react-router-dom";
 import {
   Button,
   Grid,
@@ -24,7 +26,6 @@ export default function DifficultyPage() {
   const [difficulty, setDifficulty] = useState("");
   const { username, updateUsername, setIsLoggedIn } = useUserContext();
   const [seconds, setSeconds] = useState(5);
-  const [timeout, settimeout] = useState(false);
 
   const socket = io("http://localhost:3002", {
     timeout: 10000,
@@ -49,6 +50,8 @@ export default function DifficultyPage() {
     console.log("h");
   };
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     if (count == 1) {
       socket.connect();
@@ -59,13 +62,13 @@ export default function DifficultyPage() {
       });
 
       socket.on("matchFail", () => {
-        // window.location.replace("/difficulty");
         console.log("fail");
+        navigate("/fail");
       });
 
       socket.on("matchSuccess", () => {
         console.log("success");
-        window.location.replace("/success");
+        navigate("/success");
       });
 
       // socket.connect();
@@ -84,7 +87,7 @@ export default function DifficultyPage() {
         if (seconds <= 1) {
           // change this to an error page / alert n redirect to difficulty page
           socket.emit("matchFail", { username });
-          window.location.replace("/difficulty");
+          navigate("/fail");
         }
       }, 1000);
 
@@ -160,7 +163,10 @@ export default function DifficultyPage() {
           style={{ minHeight: "50vh" }}
         >
           <Grid item xs={3}>
-            {/* <MyTimer /> */}
+            <div>
+              <span className="time">{seconds}</span>
+              <span className="label"> Seconds</span>
+            </div>
           </Grid>
           <Grid item xs={3}>
             <CircularProgress />
