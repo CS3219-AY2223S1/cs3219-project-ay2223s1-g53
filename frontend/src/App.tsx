@@ -12,14 +12,9 @@ import { Box } from "@mui/material";
 import SuccessPage from "./containers/SuccessPage";
 import FailPage from "./containers/FailPage";
 import { useUserContext } from "./hooks/useUserContext";
-import { useEffect } from "react";
 
 function App() {
   const { username } = useUserContext();
-
-  useEffect(() => {
-    console.log(username);
-  }, [username]);
 
   return (
     <Box display={"flex"} flexDirection={"column"} padding={"4rem"}>

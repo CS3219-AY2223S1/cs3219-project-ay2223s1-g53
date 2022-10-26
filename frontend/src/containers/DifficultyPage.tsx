@@ -25,7 +25,7 @@ export default function DifficultyPage() {
   const [count, setCount] = useState(0);
   const [difficulty, setDifficulty] = useState("");
   const { username, updateUsername, setIsLoggedIn } = useUserContext();
-  const [seconds, setSeconds] = useState(5);
+  const [seconds, setSeconds] = useState(20);
 
   const socket = io("http://localhost:3002", {
     timeout: 10000,
@@ -39,15 +39,12 @@ export default function DifficultyPage() {
 
   const medHandleClick = (event: React.MouseEvent<HTMLElement>) => {
     setLoading(true);
-    console.log("m");
     setDifficulty("medium");
   };
 
   const hardHandleClick = (event: React.MouseEvent<HTMLElement>) => {
     setLoading(true);
     setDifficulty("hard");
-    console.log(difficulty);
-    console.log("h");
   };
 
   const navigate = useNavigate();
@@ -58,16 +55,13 @@ export default function DifficultyPage() {
 
       socket.on("connect", () => {
         socket.emit("match", { difficulty, username });
-        console.log("match");
       });
 
       socket.on("matchFail", () => {
-        console.log("fail");
         navigate("/fail");
       });
 
       socket.on("matchSuccess", () => {
-        console.log("success");
         navigate("/success");
       });
 
@@ -79,8 +73,6 @@ export default function DifficultyPage() {
 
   useEffect(() => {
     if (loading) {
-      console.log(seconds);
-
       const interval = setInterval(() => {
         setSeconds(seconds - 1);
 
