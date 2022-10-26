@@ -5,3 +5,4 @@ user-service/.env
 matching-service/node_modules
 matching-service/.env
 chat-service/node_modules
+collab-service/node_modules
