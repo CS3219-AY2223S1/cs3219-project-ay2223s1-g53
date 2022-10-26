@@ -4,26 +4,34 @@ const sequelize = require("sequelize");
 const RepositoryMatch = {
   getExistingByDifficulty: function (difficulty, id) {
     return db.Match.findOne({
-      where: {  
+      where: {
         difficulty: difficulty,
         socketId: {
-          [sequelize.Op.not]: id
-        } }
+          [sequelize.Op.not]: id,
+        },
+      },
     });
   },
   getExistingById: function (id) {
     return db.Match.findOne({
-      where: { socketId: id }
+      where: { socketId: id },
     });
   },
   deleteExistingById: function (id) {
     return db.Match.destroy({
-      where: { socketId: id }
+      where: { socketId: id },
     });
   },
-  createExisting: function (difficulty, id) {
-    return db.Match.create({ 
-      socketId: id, difficulty: difficulty 
+  deleteExistingByUsername: function (username) {
+    return db.Match.destroy({
+      where: { username: username },
+    });
+  },
+  createExisting: function (difficulty, id, username) {
+    return db.Match.create({
+      socketId: id,
+      difficulty: difficulty,
+      username: username,
     });
   },
 };

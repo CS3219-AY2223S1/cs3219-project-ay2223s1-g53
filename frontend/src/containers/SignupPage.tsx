@@ -90,6 +90,23 @@ function SignupPage() {
           </Button>
         </Box>
 
+        <Box
+          display={"flex"}
+          flexDirection={"row"}
+          justifyContent={"space-between"}
+          pt={3}
+        >
+          <Button component={Link} to="/login">
+            <Typography
+              variant="button"
+              color="black"
+              sx={{ textDecoration: "underline" }}
+            >
+              To Log In page
+            </Typography>
+          </Button>
+        </Box>
+
         <Dialog open={isDialogOpen} onClose={closeDialog}>
           <DialogTitle>{dialogTitle}</DialogTitle>
           <DialogContent>
