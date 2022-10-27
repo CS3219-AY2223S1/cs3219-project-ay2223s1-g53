@@ -13,7 +13,7 @@ import {
 import { useState } from "react";
 import axios from "axios";
 import { URL_USER_SVC } from "../configs";
-import { STATUS_CODE_INCORRECT } from "../constants";
+import { STATUS_CODE_INCORRECT, STATUS_CODE_UNAUTHORIZED } from "../constants";
 import { Link } from "react-router-dom";
 import { useUserContext } from "../hooks/useUserContext";
 import { useNavigate } from "react-router-dom";
@@ -43,33 +43,44 @@ function LoginPage() {
   //     return res.sendStatus(403);
   //   }
   // };
+  const unfilledFields = () =>
+    setErrorDialog("Make sure all fields are filled up!");
 
   const handleLogin = async () => {
-    const res = await axios
-      .post(URL_USER_SVC, { username, password }, { withCredentials: true })
-      .then((res) => {
-        const username = res.data.username;
-        if (username) {
-          updateUsername(username);
-          setIsLoggedIn();
-          navigate("/difficulty");
-        }
-      })
-      .catch((err) => {
-        if (err.statusCode === STATUS_CODE_INCORRECT) {
-          setErrorDialog(err.message);
-        } else {
-          setErrorDialog("Please try again later");
-        }
-      });
+    if (username.trim() == "" || password.trim() == "") {
+      unfilledFields();
+      return;
+    } else {
+      const res = await axios
+        .post(URL_USER_SVC, { username, password }, { withCredentials: true })
+        .then((res) => {
+          const username = res.data.username;
+          if (username) {
+            updateUsername(username);
+            setIsLoggedIn();
+            navigate("/difficulty");
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          if (
+            err.statusCode === STATUS_CODE_INCORRECT ||
+            STATUS_CODE_UNAUTHORIZED
+          ) {
+            setErrorDialog(err.response.data.message);
+          } else {
+            setErrorDialog("try again later!");
+          }
+        });
+    }
   };
 
   const closeDialog = () => setIsDialogOpen(false);
 
-  const setErrorDialog = (msg: string) => {
+  const setErrorDialog = (data: string) => {
     setIsDialogOpen(true);
+    setDialogMsg(data);
     setDialogTitle("Error");
-    setDialogMsg(msg);
   };
 
   return (

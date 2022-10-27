@@ -33,7 +33,6 @@ function App() {
               <Route path="/signup" element={<SignupPage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="*" element={<Navigate to="/login" replace />} />
-              <Route path="/code" element={<CodePage />} />
             </>
           )}
         </Routes>
