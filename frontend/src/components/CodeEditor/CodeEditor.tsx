@@ -15,6 +15,7 @@ export default function CodeEditor({ roomId }: CodeEditorProps) {
       value={state.codeTextStore[roomId]}
       onChange={(value) => (state.codeTextStore[roomId] = value)}
       height="600px"
+      theme="vs-dark"
       width="600px"
     />
   );

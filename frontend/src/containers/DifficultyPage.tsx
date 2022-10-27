@@ -43,7 +43,7 @@ export default function DifficultyPage() {
 
   // on success, send room id to next room
   socket.on("matchSuccess", (roomId: string) => {
-    navigate("/success", { state: roomId });
+    navigate("/code", { state: roomId });
   });
 
   useEffect(() => {

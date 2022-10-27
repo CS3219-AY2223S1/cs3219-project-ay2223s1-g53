@@ -49,7 +49,6 @@ async function buildMatch(socket) {
     }
 
     if (event == "matchFail") {
-      console.log("fialed");
       matchOrm.deleteExistingMatchByUsername(incomingUsername);
     }
   });
