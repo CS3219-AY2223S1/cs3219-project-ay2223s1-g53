@@ -13,7 +13,10 @@ async function bootstrap() {
       saveUninitialized: false,
     }),
   );
-  app.enableCors({ origin: 'http://localhost:3000', credentials: true });
+  app.enableCors({
+    origin: ['http://localhost:3000', 'http://localhost:3010'],
+    credentials: true,
+  });
   app.use(passport.initialize());
   app.use(passport.session());
   app.use(cookieParser());

@@ -21,55 +21,30 @@ const Separator = styled.span`
 `;
 
 export default function DifficultyPage() {
-  const [loading, setLoading] = useState(false);
-  const [count, setCount] = useState(0);
-  const [difficulty, setDifficulty] = useState("");
+  const [loading, setLoading] = useState<boolean>(false);
   const { username, updateUsername, setIsLoggedIn } = useUserContext();
-  const [seconds, setSeconds] = useState(20);
+  const [seconds, setSeconds] = useState<number>(30);
 
   const socket = io("http://localhost:3002", {
     timeout: 10000,
     transports: ["websocket"],
   });
 
-  const easyHandleClick = (event: React.MouseEvent<HTMLElement>) => {
+  const handleClick = (difficulty: string) => {
     setLoading(true);
-    setDifficulty("easy");
-  };
-
-  const medHandleClick = (event: React.MouseEvent<HTMLElement>) => {
-    setLoading(true);
-    setDifficulty("medium");
-  };
-
-  const hardHandleClick = (event: React.MouseEvent<HTMLElement>) => {
-    setLoading(true);
-    setDifficulty("hard");
+    socket.emit("match", { difficulty, username });
   };
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (count == 1) {
-      socket.connect();
+  socket.on("matchFail", () => {
+    navigate("/fail");
+  });
 
-      socket.on("connect", () => {
-        socket.emit("match", { difficulty, username });
-      });
-
-      socket.on("matchFail", () => {
-        navigate("/fail");
-      });
-
-      socket.on("matchSuccess", () => {
-        navigate("/success");
-      });
-
-      // socket.connect();
-    } else {
-      setCount(1);
-    }
-  }, [loading]);
+  // on success, send room id to next room
+  socket.on("matchSuccess", (roomId: string) => {
+    navigate("/success", { state: roomId });
+  });
 
   useEffect(() => {
     if (loading) {
@@ -86,6 +61,10 @@ export default function DifficultyPage() {
       return () => clearInterval(interval);
     }
   }, [seconds, loading]);
+
+  useEffect(() => {
+    socket.connect();
+  }, []);
 
   return (
     <Container>
@@ -123,7 +102,7 @@ export default function DifficultyPage() {
                   title={"Easy"}
                   body={"Warm up Questions"}
                   buttontext={"choose me"}
-                  onClick={easyHandleClick}
+                  onClick={() => handleClick("easy")}
                 />
               </Grid>
               <Grid item sm={5} md={4} direction="column">
@@ -131,7 +110,7 @@ export default function DifficultyPage() {
                   title={"Medium"}
                   body={"Standard Questions"}
                   buttontext={"choose me"}
-                  onClick={medHandleClick}
+                  onClick={() => handleClick("medium")}
                 />
               </Grid>
               <Grid item sm={5} md={4} direction="column">
@@ -139,7 +118,7 @@ export default function DifficultyPage() {
                   title={"Hard"}
                   body={"Tricky Questions"}
                   buttontext={"choose me"}
-                  onClick={hardHandleClick}
+                  onClick={() => handleClick("hard")}
                 />
               </Grid>
             </Grid>

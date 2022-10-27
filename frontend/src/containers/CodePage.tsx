@@ -34,6 +34,18 @@ function CodePage() {
 
   const [list, setList] = useState(list2);
 
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const onChange = React.useCallback((value, viewUpdate) => {
+    console.log("value:", value);
+  }, []);
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [list]);
+
   // on receiving a new msg, add to the list
 
   useEffect(() => {
@@ -48,18 +60,6 @@ function CodePage() {
       socket.off("msg2");
     };
   }, [socket]);
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
-  const onChange = React.useCallback((value, viewUpdate) => {
-    console.log("value:", value);
-  }, []);
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [list]);
 
   return (
     <Box
