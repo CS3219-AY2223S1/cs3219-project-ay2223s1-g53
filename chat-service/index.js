@@ -16,10 +16,16 @@ httpServer.listen(8002);
 const io = new Server(httpServer);
 
 io.on("connection", (socket) => {
+  const roomId = socket.handshake.query.roomId;
+  socket.join(socket.handshake.query.roomId);
   socket.on("newmsg", (data) => {
     console.log(data);
-    io.emit("msg2", data);
+    io.to(data.roomId).emit("msg2", data);
     // send this word out to all sockets connected to this one...
+  });
+  socket.on("disconnect", () => {
+    console.log("left");
+    io.to(roomId).emit("friendLeft"); // undefined
   });
 });
 

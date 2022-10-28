@@ -13,7 +13,7 @@ import {
 import { useState } from "react";
 import axios from "axios";
 import { URL_SIGNUP_SVC } from "../configs";
-import { STATUS_CODE_CONFLICT } from "../constants";
+import { STATUS_CODE_INCORRECT } from "../constants";
 import { Link } from "react-router-dom";
 
 function SignupPage() {
@@ -24,20 +24,29 @@ function SignupPage() {
   const [dialogMsg, setDialogMsg] = useState<string>("");
   const [isSignupSuccess, setIsSignupSuccess] = useState<boolean>(false);
 
+  const unfilledFields = () =>
+    setErrorDialog("Make sure all fields are filled up!");
+
   const handleSignup = async () => {
-    setIsSignupSuccess(false);
-    const res = await axios
-      .post(URL_SIGNUP_SVC, { username, password })
-      .catch((err) => {
-        if (err.response.status === STATUS_CODE_CONFLICT) {
-          setErrorDialog(err.response.message);
-        } else {
-          setErrorDialog("Please try again later");
-        }
-      });
-    if (res && res.data.username === username) {
-      setSuccessDialog("Account successfully created");
-      setIsSignupSuccess(true);
+    if (username.trim() == "" || password.trim() == "") {
+      unfilledFields();
+      return;
+    } else {
+      setIsSignupSuccess(false);
+      const res = await axios
+        .post(URL_SIGNUP_SVC, { username, password })
+        .catch((err) => {
+          console.log(err);
+          if (err.response.status === STATUS_CODE_INCORRECT) {
+            setErrorDialog(err.response.data.message);
+          } else {
+            setErrorDialog("Please try again later");
+          }
+        });
+      if (res && res.data.username === username) {
+        setSuccessDialog("Account successfully created");
+        setIsSignupSuccess(true);
+      }
     }
   };
 

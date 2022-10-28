@@ -3,11 +3,21 @@ const matchOrm = require("./match-orm.js");
 const MATCH_TIMEOUT = 30 * 1000;
 
 async function buildMatch(socket) {
+  let incomingUsername;
+  let emptyChecker = "";
+  // manages abrupt disconnects
+  socket.on("disconnect", () => {
+    if (incomingUsername) {
+      matchOrm.deleteExistingMatchByUsername(incomingUsername);
+    }
+  });
+
   socket.onAny(async (event, match) => {
-    console.log(`got ${event}`);
+    emptyChecker = "some connection";
     const incomingSocketId = socket.id;
-    const incomingUsername = match.username;
+    incomingUsername = match?.username;
     console.log(incomingSocketId);
+
     if (event == "match") {
       try {
         const incomingDifficulty = match.difficulty;
@@ -17,9 +27,10 @@ async function buildMatch(socket) {
           incomingSocketId
         );
         if (existing) {
-          // There is an existing match entry with the same difficulty, notify both sockets and delete existing entry
-          socket.emit("matchSuccess", existing.socketId);
-          socket.to(existing.socketId).emit("matchSuccess", incomingSocketId);
+          // There is an existing match entry with the same difficulty, generate roomId to both sockets and delete existing entry
+          const roomId = existing.socketId + incomingSocketId;
+          socket.emit("matchSuccess", roomId);
+          socket.to(existing.socketId).emit("matchSuccess", roomId);
           matchOrm.deleteExistingMatchById(existing.socketId);
           return;
         } else {
@@ -29,7 +40,6 @@ async function buildMatch(socket) {
             incomingDifficulty,
             incomingUsername
           );
-          // Wait for timeout before failing
           socket.emit("matching");
           return;
         }
