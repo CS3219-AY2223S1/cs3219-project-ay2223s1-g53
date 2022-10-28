@@ -62,7 +62,6 @@ function LoginPage() {
           }
         })
         .catch((err) => {
-          console.log(err);
           if (
             err.statusCode === STATUS_CODE_INCORRECT ||
             STATUS_CODE_UNAUTHORIZED
@@ -96,17 +95,6 @@ function LoginPage() {
         <Typography variant={"h3"} marginBottom={"2rem"}>
           Log in
         </Typography>
-        {/* <Button
-          onClick={() => {
-            axios
-              .get("http://localhost:3001/users/get", {
-                withCredentials: true,
-              })
-              .then((res) => console.log(res));
-          }}
-        >
-          get shit
-        </Button> */}
         <TextField
           label="Username"
           variant="standard"

@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Paper,
   List,
@@ -52,10 +51,6 @@ function CodePage() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  const onChange = React.useCallback((value, viewUpdate) => {
-    console.log("value:", value);
-  }, []);
-
   useEffect(() => {
     scrollToBottom();
   }, [list]);
@@ -68,11 +63,8 @@ function CodePage() {
 
   useEffect(() => {
     socket.on("msg2", (arg) => {
-      console.log("re");
-      console.log(arg);
       const obj = { id: list.length, user: arg.user, msg: arg.msg };
       setList([...list, obj]);
-      console.log(list);
     });
 
     socket.on("friendLeft", () => {
@@ -103,14 +95,6 @@ function CodePage() {
         </Typography>
       </Box>
       <Box>
-        {/* <CodeMirror
-          value="console.log('hello world!');"
-          height="600px"
-          width="500px"
-          theme={okaidia}
-          extensions={[javascript({ jsx: true })]}
-          onChange={onChange}
-        /> */}
         <CodeEditor roomId={roomId} />
         <Button variant={"outlined"}>Submit</Button>
       </Box>
@@ -156,7 +140,6 @@ function CodePage() {
             socket.emit("newmsg", { user: username, msg: msg, roomId: roomId });
             const obj = { id: list.length, user: "you", msg: msg };
             setList([...list, obj]);
-            console.log(msg);
 
             setmsg("");
           }}

@@ -16,7 +16,6 @@ async function buildMatch(socket) {
     emptyChecker = "some connection";
     const incomingSocketId = socket.id;
     incomingUsername = match?.username;
-    console.log(incomingSocketId);
 
     if (event == "match") {
       try {

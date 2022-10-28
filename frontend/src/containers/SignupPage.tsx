@@ -36,7 +36,6 @@ function SignupPage() {
       const res = await axios
         .post(URL_SIGNUP_SVC, { username, password })
         .catch((err) => {
-          console.log(err);
           if (err.response.status === STATUS_CODE_INCORRECT) {
             setErrorDialog(err.response.data.message);
           } else {
