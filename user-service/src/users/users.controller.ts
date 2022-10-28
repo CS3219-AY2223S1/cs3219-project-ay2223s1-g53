@@ -10,7 +10,6 @@ import { UsersService } from './users.service';
 import { UserDto, FindUserDto } from './dto/user.dto';
 import { User } from 'src/types/user';
 import { UserResponseBody } from 'src/types/responses';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { Public } from 'src/auth/guards/setMetadata';
 
 @Controller('users')
