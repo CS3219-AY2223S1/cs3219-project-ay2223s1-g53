@@ -14,13 +14,19 @@ export class AuthService {
   async validateUser(userDto: UserDto): Promise<any> {
     const user = await this.usersService.findOne(userDto);
     if (!user) {
-      throw new UnauthorizedException('This user does not exist.');
+      throw new UnauthorizedException({
+        errorCode: 1,
+        message: 'This user does not exist.',
+      });
     }
     {
       const { password } = userDto;
       const isValidPassword = await compare(password, user?.password ?? '');
       if (!isValidPassword) {
-        throw new UnauthorizedException('The password is wrong.');
+        throw new UnauthorizedException({
+          errorCode: 2,
+          message: 'The password is wrong.',
+        });
       }
     }
     const { password, ...result } = user;
