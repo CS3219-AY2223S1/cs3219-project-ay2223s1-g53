@@ -17,3 +17,5 @@ chat-service/node_modules
 collab-service/node_modules
 collab-service/.env
 
+# question service
+question-service/node_modules
