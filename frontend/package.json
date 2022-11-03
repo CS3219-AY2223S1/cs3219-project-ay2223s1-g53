@@ -21,6 +21,7 @@
     "@uiw/react-codemirror": "^4.12.4",
     "axios": "^0.27.2",
     "codemirror": "^6.0.1",
+    "html-react-parser": "^3.0.4",
     "monaco-editor": "^0.34.1",
     "native-base-web": "^0.0.5",
     "react": "^18.2.0",
