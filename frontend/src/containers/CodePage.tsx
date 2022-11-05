@@ -1,9 +1,7 @@
 import {
   Paper,
-  List,
   Box,
   Button,
-  Typography,
   TextField,
   Dialog,
   DialogActions,
@@ -12,13 +10,14 @@ import {
   DialogTitle,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import ListItem from "@mui/material/ListItem";
-import ListItemText from "@mui/material/ListItemText";
 import { useEffect, useRef, useState } from "react";
 import { io } from "socket.io-client";
 import { useUserContext } from "../hooks/useUserContext";
 import CodeEditor from "../components/CodeEditor/CodeEditor";
+import Chat from "../components/Chat/Chat";
 import { useLocation } from "react-router-dom";
+import axios from "axios";
+import parse from "html-react-parser";
 
 function CodePage() {
   const [msg, setmsg] = useState<string>("");
@@ -26,8 +25,11 @@ function CodePage() {
   const { username } = useUserContext();
   const history: any = useLocation();
   const [roomId, setRoomId] = useState<string>("");
+  const [str, setStr] = useState<string>("");
+  const [title, setTitle] = useState<string>("");
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const navigate = useNavigate();
+  const difficulty = "medium";
 
   const socket = io("http://localhost:3003", {
     timeout: 10000,
@@ -37,16 +39,10 @@ function CodePage() {
     },
   });
 
-  const setErrorDialog = (msg: string) => {
-    setIsDialogOpen(true);
-  };
-
   const closeDialog = () => setIsDialogOpen(false);
   const backToDifficulty = () => navigate("/difficulty");
 
-  const list2 = [];
-
-  const [list, setList] = useState(list2);
+  const [list, setList] = useState([]);
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -56,6 +52,10 @@ function CodePage() {
   }, [list]);
 
   useEffect(() => {
+    axios.get("http://localhost:3005?difficulty=medium").then((res) => {
+      setTitle(res.data.data[0].questionTitle);
+      setStr(res.data.data[0].questionBody);
+    });
     setRoomId(history.state);
   }, []);
 
@@ -78,89 +78,95 @@ function CodePage() {
   return (
     <Box
       display={"flex"}
-      flexDirection={"row"}
+      flexDirection={"column"}
       justifyContent={"space-between"}
     >
-      <Box>
-        <Typography
-          variant="h6"
-          color="black"
-          sx={{ textDecoration: "underline" }}
+      <Box
+        sx={{
+          bgcolor: "background.paper",
+          marginBottom: "2rem",
+        }}
+      >
+        <Paper
+          style={{
+            maxHeight: 350,
+            maxWidth: 1300,
+            minWidth: 1300,
+            minHeight: 350,
+            overflowY: "scroll",
+          }}
         >
-          {username}
-        </Typography>
+          <>{parse(title)}</>
+          <>{parse(str)}</>
+        </Paper>
+      </Box>
+      <Box
+        display={"flex"}
+        flexDirection={"row"}
+        justifyContent={"space-between"}
+      >
+        <Box>
+          <CodeEditor roomId={roomId} />
+          <Button variant={"outlined"}>Submit</Button>
+        </Box>
 
-        <Typography variant="body1" color="black">
-          question body
-        </Typography>
-      </Box>
-      <Box>
-        <CodeEditor roomId={roomId} />
-        <Button variant={"outlined"}>Submit</Button>
-      </Box>
-      <Box>
         <Box
           sx={{
-            width: "100%",
-            height: 400,
-            maxWidth: 360,
+            maxWidth: 500,
+            minWidth: 500,
             bgcolor: "background.paper",
           }}
         >
-          <Paper
-            style={{
-              maxHeight: 380,
-              minHeight: 380,
-              overflow: "auto",
-              overflowY: "scroll",
+          <Chat list={list}></Chat>
+          <TextField
+            label="Input text here"
+            variant="standard"
+            value={msg}
+            onChange={(e) => setmsg(e.target.value)}
+            sx={{
+              height: 400,
+              maxWidth: 300,
+              minWidth: 300,
+              bgcolor: "background.paper",
+              marginTop: "1rem",
+            }}
+          />
+          <Button
+            variant={"outlined"}
+            onClick={() => {
+              socket.emit("newmsg", {
+                user: username,
+                msg: msg,
+                roomId: roomId,
+              });
+              const obj = { id: list.length, user: "you", msg: msg };
+              setList([...list, obj]);
+
+              setmsg("");
+            }}
+            sx={{
+              marginTop: "1rem",
+              marginLeft: "1rem",
             }}
           >
-            <List>
-              {list.map((item) => {
-                return (
-                  <ListItem key={item.id}>
-                    <ListItemText primary={item.msg} secondary={item.user} />
-                  </ListItem>
-                );
-              })}
-              <div ref={messagesEndRef} />
-            </List>
-          </Paper>
-        </Box>
-        <TextField
-          label="Input text here"
-          variant="standard"
-          value={msg}
-          onChange={(e) => setmsg(e.target.value)}
-          sx={{ marginBottom: "2rem" }}
-        />
-        <Button
-          variant={"outlined"}
-          onClick={() => {
-            socket.emit("newmsg", { user: username, msg: msg, roomId: roomId });
-            const obj = { id: list.length, user: "you", msg: msg };
-            setList([...list, obj]);
-
-            setmsg("");
-          }}
-        >
-          Send
-        </Button>
-      </Box>
-      <Dialog open={isDialogOpen} onClose={closeDialog}>
-        <DialogTitle>Alert</DialogTitle>
-        <DialogContent>
-          <DialogContentText>Your Friend Left</DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={closeDialog}>Continue Coding by Yourself</Button>
-        </DialogActions>
-        <DialogActions>
-          <Button onClick={backToDifficulty}>
-            Back to Difficulty Selection
+            Send
           </Button>
-        </DialogActions>
-      </Dialog>
+        </Box>
+        <Dialog open={isDialogOpen} onClose={closeDialog}>
+          <DialogTitle>Alert</DialogTitle>
+          <DialogContent>
+            <DialogContentText>Your Friend Left</DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={closeDialog}>Continue Coding by Yourself</Button>
+          </DialogActions>
+          <DialogActions>
+            <Button onClick={backToDifficulty}>
+              Back to Difficulty Selection
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </Box>
     </Box>
   );
 }
