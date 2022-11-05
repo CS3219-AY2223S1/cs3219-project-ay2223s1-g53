@@ -1,4 +1,12 @@
-import { Controller, Request, Post, Get, UseGuards, Res } from '@nestjs/common';
+import {
+  Controller,
+  Request,
+  Post,
+  Get,
+  UseGuards,
+  Res,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Response } from 'express';
 import { AuthService } from './auth/auth.service';
 import { LocalAuthGuard } from './auth/guards/local-auth.guard';
@@ -18,8 +26,29 @@ export class AppController {
 
   @Public()
   @Get('auth/logout')
-  async logout(@Res({ passthrough: true }) res: Response) {
-    res.clearCookie('jwt');
+  async logout(@Request() req) {
+    this.authService.logout(req.cookies['jwt']);
     return { message: 'The user session has ended' };
+  }
+
+  @Public()
+  @Get('auth/session')
+  async isLoggedIn(@Request() req) {
+    if (!req.cookies['jwt']) {
+      throw new UnauthorizedException({
+        errorCode: 7,
+        message: 'user is not logged in',
+      });
+    }
+    const res = await this.authService.checkSession(req.cookies['jwt']);
+
+    if (res) {
+      return { message: 'user is logged in' };
+    } else {
+      throw new UnauthorizedException({
+        errorCode: 7,
+        message: 'user is not logged in',
+      });
+    }
   }
 }
