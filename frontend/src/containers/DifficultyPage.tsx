@@ -7,6 +7,11 @@ import {
   Typography,
   Container,
   CircularProgress,
+  AppBar,
+  Toolbar,
+  Menu,
+  MenuItem,
+  TextField,
 } from "@mui/material";
 import styled from "styled-components";
 import { useEffect, useState } from "react";
@@ -24,6 +29,16 @@ export default function DifficultyPage() {
   const [loading, setLoading] = useState<boolean>(false);
   const { username, updateUsername, setIsLoggedIn } = useUserContext();
   const [seconds, setSeconds] = useState<number>(30);
+  const [newPassword, setNewPassword] = useState<string>("");
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+
+  const handleMenuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   const socket = io("http://localhost:3002", {
     timeout: 10000,
@@ -70,26 +85,60 @@ export default function DifficultyPage() {
     <Container>
       {!loading ? (
         <Container>
-          <Button
-            onClick={() => {
-              axios.get("http://localhost:3001/auth/logout", {
-                withCredentials: true,
-              });
-              updateUsername("");
-              setIsLoggedIn();
-            }}
-          >
-            logout
-          </Button>
-          <Button
-            onClick={() => {
-              axios.get("http://localhost:3001/users/get", {
-                withCredentials: true,
-              });
-            }}
-          >
-            get shit
-          </Button>
+          <AppBar position="fixed">
+            <Toolbar>
+              <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                Welcome, {username}
+              </Typography>
+              <Button
+                color="inherit"
+                variant="outlined"
+                onClick={() => {
+                  axios.get("http://localhost:3001/auth/logout", {
+                    withCredentials: true,
+                  });
+                  updateUsername("");
+                  setIsLoggedIn();
+                }}
+                sx={{
+                  marginRight: "2rem",
+                }}
+              >
+                logout
+              </Button>
+
+              <Button
+                color="inherit"
+                id="basic-button"
+                variant="outlined"
+                onClick={handleMenuClick}
+              >
+                Change Password
+              </Button>
+              <Menu
+                id="basic-menu"
+                anchorEl={anchorEl}
+                open={open}
+                onClose={handleClose}
+                MenuListProps={{
+                  "aria-labelledby": "basic-button",
+                }}
+              >
+                <MenuItem>
+                  <TextField
+                    label="New Password"
+                    variant="standard"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    sx={{ marginBottom: "1rem" }}
+                    autoFocus
+                  />
+                </MenuItem>
+                <MenuItem onClick={handleClose}>Change Password</MenuItem>
+              </Menu>
+            </Toolbar>
+          </AppBar>
+
           <Container sx={{ pt: 5, pb: 5 }}>
             <Typography variant="h2" align="center">
               Difficulty Levels
