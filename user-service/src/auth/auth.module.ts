@@ -1,8 +1,10 @@
 import { Module } from '@nestjs/common';
-import { JwtModule, JwtService } from '@nestjs/jwt';
+import { JwtModule } from '@nestjs/jwt';
+import { MongooseModule } from '@nestjs/mongoose';
 import { PassportModule } from '@nestjs/passport';
 import { UsersModule } from 'src/users/users.module';
 import { AuthService } from './auth.service';
+import { Session, SessionSchema } from './schemas/session.schema';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { LocalStrategy } from './strategies/local.strategy';
 
@@ -10,6 +12,7 @@ import { LocalStrategy } from './strategies/local.strategy';
   imports: [
     UsersModule,
     PassportModule,
+    MongooseModule.forFeature([{ name: Session.name, schema: SessionSchema }]),
     JwtModule.register({
       secret: process.env.SECRET_KEY,
     }),
