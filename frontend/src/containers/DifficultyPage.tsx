@@ -24,6 +24,14 @@ export default function DifficultyPage() {
   const [loading, setLoading] = useState<boolean>(false);
   const { username, updateUsername, setIsLoggedIn } = useUserContext();
   const [seconds, setSeconds] = useState<number>(30);
+  const open = Boolean(anchorEl);
+
+  const handleMenuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   const socket = io("http://localhost:3002", {
     timeout: 10000,
@@ -32,6 +40,7 @@ export default function DifficultyPage() {
 
   const handleClick = (difficulty: string) => {
     setLoading(true);
+    setDifficulty(difficulty);
     socket.emit("match", { difficulty, username });
   };
 
