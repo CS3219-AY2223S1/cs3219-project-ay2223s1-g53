@@ -10,6 +10,7 @@ import DifficultyPage from "./containers/DifficultyPage";
 import CodePage from "./containers/CodePage";
 import { Box } from "@mui/material";
 import SuccessPage from "./containers/SuccessPage";
+import PasswordPage from "./containers/PasswordPage";
 import FailPage from "./containers/FailPage";
 import { useUserContext } from "./hooks/useUserContext";
 
@@ -27,6 +28,7 @@ function App() {
               <Route path="/difficulty" element={<DifficultyPage />} />
               <Route path="/code" element={<CodePage />} />
               <Route path="*" element={<Navigate to="/difficulty" replace />} />
+              <Route path="/password" element={<PasswordPage />} />
             </>
           ) : (
             <>

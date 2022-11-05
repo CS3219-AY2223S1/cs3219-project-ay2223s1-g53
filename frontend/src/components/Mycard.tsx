@@ -18,7 +18,13 @@ export default function Mycard({
   onClick,
 }: CardProps) {
   return (
-    <Card>
+    <Card
+      style={{
+        minHeight: 150,
+        minWidth: 300,
+        marginLeft: "1rem",
+      }}
+    >
       <CardHeader
         titleTypographyProps={{ variant: "h4" }}
         title={title}

@@ -1,13 +1,9 @@
 const RepositoryQuestion = require("./repository.js");
 
 const OrmQuestion = {
-  getRandomQuestionByDifficulty: async function (difficulty) {
-    return await RepositoryQuestion.getRandomByDifficulty(difficulty);
+  getRandomQuestionByDifficulty: async function (difficulty, seed) {
+    return await RepositoryQuestion.getRandomByDifficulty(difficulty, seed);
   },
-
-  getQuestionById: async function (id) {
-    return await RepositoryQuestion.getById(id);
-  }
 };
 
 module.exports = OrmQuestion;

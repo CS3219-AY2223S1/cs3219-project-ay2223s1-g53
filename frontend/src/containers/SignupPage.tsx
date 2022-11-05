@@ -9,12 +9,15 @@ import {
   Grid,
   TextField,
   Typography,
+  InputAdornment,
+  IconButton,
 } from "@mui/material";
 import { useState } from "react";
 import axios from "axios";
 import { URL_SIGNUP_SVC } from "../configs";
 import { STATUS_CODE_INCORRECT } from "../constants";
 import { Link } from "react-router-dom";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 function SignupPage() {
   const [username, setUsername] = useState<string>("");
@@ -23,6 +26,10 @@ function SignupPage() {
   const [dialogTitle, setDialogTitle] = useState<string>("");
   const [dialogMsg, setDialogMsg] = useState<string>("");
   const [isSignupSuccess, setIsSignupSuccess] = useState<boolean>(false);
+
+  const [showPassword, setShowPassword] = useState(false);
+  const handleClickShowPassword = () => setShowPassword(!showPassword);
+  const handleMouseDownPassword = () => setShowPassword(!showPassword);
 
   const unfilledFields = () =>
     setErrorDialog("Make sure all fields are filled up!");
@@ -70,7 +77,10 @@ function SignupPage() {
       direction="column"
       alignItems="center"
       justifyContent="center"
-      style={{ minHeight: "75vh" }}
+      style={{
+        minWidth: 500,
+        minHeight: "75vh",
+      }}
     >
       <Box display={"flex"} flexDirection={"column"} width={"30%"}>
         <Typography variant={"h3"} marginBottom={"2rem"}>
@@ -87,9 +97,23 @@ function SignupPage() {
         <TextField
           label="Password"
           variant="standard"
-          type="password"
+          type={showPassword ? "text" : "password"}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          InputProps={{
+            // <-- This is where the toggle button is added.
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label="toggle password visibility"
+                  onClick={handleClickShowPassword}
+                  onMouseDown={handleMouseDownPassword}
+                >
+                  {showPassword ? <Visibility /> : <VisibilityOff />}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
           sx={{ marginBottom: "2rem" }}
         />
         <Box display={"flex"} flexDirection={"row"} justifyContent={"flex-end"}>

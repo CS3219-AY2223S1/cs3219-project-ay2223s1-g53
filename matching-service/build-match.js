@@ -28,8 +28,10 @@ async function buildMatch(socket) {
         if (existing) {
           // There is an existing match entry with the same difficulty, generate roomId to both sockets and delete existing entry
           const roomId = existing.socketId + incomingSocketId;
-          socket.emit("matchSuccess", roomId);
-          socket.to(existing.socketId).emit("matchSuccess", roomId);
+          socket.emit("matchSuccess", roomId, incomingDifficulty);
+          socket
+            .to(existing.socketId)
+            .emit("matchSuccess", roomId, incomingDifficulty);
           matchOrm.deleteExistingMatchById(existing.socketId);
           return;
         } else {

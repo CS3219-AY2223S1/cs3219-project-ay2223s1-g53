@@ -14,59 +14,41 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import axios from "axios";
-import { URL_LOGIN_SVC } from "../configs";
+import { URL_CHANGE_SVC } from "../configs";
 import { STATUS_CODE_INCORRECT, STATUS_CODE_UNAUTHORIZED } from "../constants";
 import { Link } from "react-router-dom";
-import { useUserContext } from "../hooks/useUserContext";
 import { useNavigate } from "react-router-dom";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
-// const jwt = require("jsonwebtoken");
 
-function LoginPage() {
-  const [username, setUsername] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+
+function PasswordPage() {
+  const [oldPassword, setOldPassword] = useState<string>("");
+  const [newPassword, setNewPassword] = useState<string>("");
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const [dialogTitle, setDialogTitle] = useState<string>("");
   const [dialogMsg, setDialogMsg] = useState<string>("");
-
   const [showPassword, setShowPassword] = useState(false);
   const handleClickShowPassword = () => setShowPassword(!showPassword);
   const handleMouseDownPassword = () => setShowPassword(!showPassword);
 
-  const { updateUsername, setIsLoggedIn } = useUserContext();
   const navigate = useNavigate();
 
-  // const authorization = (req, res, next) => {
-  //   const token = req.cookies.access_token;
-  //   if (!token) {
-  //     return res.sendStatus(403);
-  //   }
-  //   try {
-  //     const data = jwt.verify(token, "YOUR_SECRET_KEY");
-  //     req.userId = data.id;
-  //     req.userRole = data.role;
-  //     return next();
-  //   } catch {
-  //     return res.sendStatus(403);
-  //   }
-  // };
   const unfilledFields = () =>
     setErrorDialog("Make sure all fields are filled up!");
 
   const handleLogin = async () => {
-    if (username.trim() == "" || password.trim() == "") {
+    if (oldPassword.trim() == "" || newPassword.trim() == "") {
       unfilledFields();
       return;
     } else {
       const res = await axios
-        .post(URL_LOGIN_SVC, { username, password }, { withCredentials: true })
+        .post(
+          URL_CHANGE_SVC,
+          { currentPassword: oldPassword, newPassword: newPassword },
+          { withCredentials: true }
+        )
         .then((res) => {
-          const username = res.data.username;
-          if (username) {
-            updateUsername(username);
-            setIsLoggedIn();
-            navigate("/difficulty");
-          }
+          setSuccessDialog(res.data.message);
         })
         .catch((err) => {
           if (
@@ -89,6 +71,12 @@ function LoginPage() {
     setDialogTitle("Error");
   };
 
+  const setSuccessDialog = (data: string) => {
+    setIsDialogOpen(true);
+    setDialogMsg(data);
+    setDialogTitle("Success");
+  };
+
   return (
     <Grid
       container
@@ -103,22 +91,23 @@ function LoginPage() {
     >
       <Box display={"flex"} flexDirection={"column"} width={"30%"}>
         <Typography variant={"h3"} marginBottom={"2rem"}>
-          Log in
+          Password Reset
         </Typography>
         <TextField
-          label="Username"
+          label="Old Password"
           variant="standard"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          type="text"
+          value={oldPassword}
+          onChange={(e) => setOldPassword(e.target.value)}
           sx={{ marginBottom: "1rem" }}
           autoFocus
         />
         <TextField
-          label="Password"
+          label="New Password"
           variant="standard"
           type={showPassword ? "text" : "password"}
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          value={newPassword}
+          onChange={(e) => setNewPassword(e.target.value)}
           InputProps={{
             // <-- This is where the toggle button is added.
             endAdornment: (
@@ -137,7 +126,7 @@ function LoginPage() {
         />
         <Box display={"flex"} flexDirection={"row"} justifyContent={"flex-end"}>
           <Button variant={"outlined"} onClick={handleLogin}>
-            Log in
+            Reset
           </Button>
         </Box>
 
@@ -147,13 +136,13 @@ function LoginPage() {
           justifyContent={"space-between"}
           pt={3}
         >
-          <Button component={Link} to="/signup">
+          <Button component={Link} to="/difficulty">
             <Typography
               variant="button"
               color="black"
               sx={{ textDecoration: "underline" }}
             >
-              To Sign Up page
+              Back to Difficulty Page
             </Typography>
           </Button>
         </Box>
@@ -172,4 +161,4 @@ function LoginPage() {
   );
 }
 
-export default LoginPage;
+export default PasswordPage;

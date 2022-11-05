@@ -29,13 +29,12 @@ function CodePage() {
   const [title, setTitle] = useState<string>("");
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const navigate = useNavigate();
-  const difficulty = "medium";
 
   const socket = io("http://localhost:3003", {
     timeout: 10000,
     transports: ["websocket"],
     query: {
-      roomId: history.state,
+      roomId: history.state.roomId,
     },
   });
 
@@ -52,11 +51,17 @@ function CodePage() {
   }, [list]);
 
   useEffect(() => {
-    axios.get("http://localhost:3005?difficulty=medium").then((res) => {
-      setTitle(res.data.data[0].questionTitle);
-      setStr(res.data.data[0].questionBody);
-    });
-    setRoomId(history.state);
+    console.log("useffect");
+    console.log(history.state);
+    axios
+      .get(
+        `http://localhost:3005?difficulty=${history.state.difficulty}&seed=${history.state.seed}`
+      )
+      .then((res) => {
+        setTitle(res.data.data.questionTitle);
+        setStr(res.data.data.questionBody);
+      });
+    setRoomId(history.state.roomId);
   }, []);
 
   // on receiving a new msg, add to the list
@@ -80,6 +85,13 @@ function CodePage() {
       display={"flex"}
       flexDirection={"column"}
       justifyContent={"space-between"}
+      alignItems="center"
+      style={{
+        maxHeight: 350,
+        maxWidth: 1300,
+        minWidth: 1300,
+        minHeight: 350,
+      }}
     >
       <Box
         sx={{
@@ -104,6 +116,12 @@ function CodePage() {
         display={"flex"}
         flexDirection={"row"}
         justifyContent={"space-between"}
+        style={{
+          maxHeight: 350,
+          maxWidth: 1300,
+          minWidth: 1300,
+          minHeight: 350,
+        }}
       >
         <Box>
           <CodeEditor roomId={roomId} />

@@ -2,6 +2,7 @@ import Mycard from "../components/Mycard";
 
 import { useNavigate } from "react-router-dom";
 import {
+  Box,
   Button,
   Grid,
   Typography,
@@ -19,6 +20,7 @@ import { useEffect, useState } from "react";
 import { useUserContext } from "../hooks/useUserContext";
 import axios from "axios";
 import { io } from "socket.io-client";
+import { Link } from "react-router-dom";
 
 const Separator = styled.span`
   margin-top: 10px;
@@ -57,8 +59,18 @@ export default function DifficultyPage() {
   });
 
   // on success, send room id to next room
-  socket.on("matchSuccess", (roomId: string) => {
-    navigate("/code", { state: roomId });
+
+  socket.on("matchSuccess", (roomId: string, difficulty: string) => {
+    let id = 0;
+
+    for (let i = 0; i < roomId.length; i++) {
+      console.log(roomId.charCodeAt(i));
+      id += roomId.charCodeAt(i);
+    }
+
+    navigate("/code", {
+      state: { roomId: roomId, seed: id, difficulty: difficulty },
+    });
   });
 
   useEffect(() => {
@@ -82,7 +94,12 @@ export default function DifficultyPage() {
   }, []);
 
   return (
-    <Container>
+    <Container
+      style={{
+        minHeight: "75vh",
+        minWidth: "75vh",
+      }}
+    >
       {!loading ? (
         <Container>
           <AppBar position="fixed">
@@ -111,7 +128,8 @@ export default function DifficultyPage() {
                 color="inherit"
                 id="basic-button"
                 variant="outlined"
-                onClick={handleMenuClick}
+                component={Link}
+                to="/password"
               >
                 Change Password
               </Button>
@@ -145,32 +163,32 @@ export default function DifficultyPage() {
             </Typography>
           </Container>
           <Container>
-            <Grid container spacing={4}>
-              <Grid item sm={5} md={4} xs={12}>
-                <Mycard
-                  title={"Easy"}
-                  body={"Warm up Questions"}
-                  buttontext={"choose me"}
-                  onClick={() => handleClick("easy")}
-                />
-              </Grid>
-              <Grid item sm={5} md={4} direction="column">
-                <Mycard
-                  title={"Medium"}
-                  body={"Standard Questions"}
-                  buttontext={"choose me"}
-                  onClick={() => handleClick("medium")}
-                />
-              </Grid>
-              <Grid item sm={5} md={4} direction="column">
-                <Mycard
-                  title={"Hard"}
-                  body={"Tricky Questions"}
-                  buttontext={"choose me"}
-                  onClick={() => handleClick("hard")}
-                />
-              </Grid>
-            </Grid>
+            <Box
+              display={"flex"}
+              flexDirection={"row"}
+              justifyContent={"space-between"}
+              style={{ minWidth: "600" }}
+            >
+              <Mycard
+                title={"Easy"}
+                body={"Warm up Questions"}
+                buttontext={"choose me"}
+                onClick={() => handleClick("easy")}
+              />
+              <Mycard
+                title={"Medium"}
+                body={"Standard Questions"}
+                buttontext={"choose me"}
+                onClick={() => handleClick("medium")}
+              />
+
+              <Mycard
+                title={"Hard"}
+                body={"Tricky Questions"}
+                buttontext={"choose me"}
+                onClick={() => handleClick("hard")}
+              />
+            </Box>
           </Container>
         </Container>
       ) : (

@@ -15,20 +15,15 @@ app.use(
 
 app.get("/", async (req, res) => {
   const difficulty = req.query.difficulty;
-  const result = await questionOrm.getRandomQuestionByDifficulty(difficulty);
+  const seed = req.query.seed;
+  const result = await questionOrm.getRandomQuestionByDifficulty(
+    difficulty,
+    seed
+  );
   res.json({
     message: "success",
     data: result,
   });
-});
-
-app.get("/find", async (req, res) => {
-  const id = req.query.id;
-  const result = await questionOrm.getQuestionById(id);
-  res.json({
-    "message":"success",
-    "data":result
-});
 });
 
 app.listen(port, () => {

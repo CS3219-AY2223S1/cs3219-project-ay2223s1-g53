@@ -2,20 +2,17 @@ const db = require("./models/index.js");
 const sequelize = require("sequelize");
 
 const RepositoryQuestion = {
-  getRandomByDifficulty: function (difficulty) {
-    return db.Question.findAll({
+  getRandomByDifficulty: async function (difficulty, seed) {
+    const res = await db.Question.findAll({
       where: {
-        difficulty: difficulty
+        difficulty: difficulty,
       },
-      order: db.sequelize.random(),
-      limit: 1
+      order: [["id", "DESC"]],
     });
+    console.log(res);
+    const index = seed % res.length;
+    return res[index];
   },
-  getById: function (id) {
-    return db.Question.findOne({
-      where: { id: id }
-    });
-  }
 };
 
 module.exports = RepositoryQuestion;
