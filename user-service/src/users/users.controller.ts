@@ -36,4 +36,9 @@ export class UsersController {
   async delete(@Request() req: Request) {
     return this.userService.delete(req);
   }
+
+  @Post('change')
+  async changePassword(@Request() req: Request) {
+    return this.userService.changePassword(req);
+  }
 }
