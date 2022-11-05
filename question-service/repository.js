@@ -10,6 +10,11 @@ const RepositoryQuestion = {
       order: db.sequelize.random(),
       limit: 1
     });
+  },
+  getById: function (id) {
+    return db.Question.findOne({
+      where: { id: id }
+    });
   }
 };
 

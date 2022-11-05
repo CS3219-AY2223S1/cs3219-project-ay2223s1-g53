@@ -16,6 +16,16 @@ app.get("/", async (req, res) => {
     "data":result
 });
 });
+
+app.get("/find", async (req, res) => {
+  const id = req.query.id;
+  const result = await questionOrm.getQuestionById(id);
+  res.json({
+    "message":"success",
+    "data":result
+});
+});
+
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });

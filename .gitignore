@@ -19,3 +19,4 @@ collab-service/.env
 
 # question service
 question-service/node_modules
+question-service/.env
