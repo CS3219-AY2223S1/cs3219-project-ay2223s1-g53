@@ -2,6 +2,7 @@ import {
   Paper,
   Box,
   Button,
+  Grid,
   TextField,
   Dialog,
   DialogActions,
@@ -81,111 +82,109 @@ function CodePage() {
   }, [socket]);
 
   return (
-    <Box
-      display={"flex"}
-      flexDirection={"column"}
-      justifyContent={"space-between"}
+    <Grid
+      container
+      direction="column"
       alignItems="center"
-      style={{
-        maxHeight: 350,
-        maxWidth: 1300,
-        minWidth: 1300,
-        minHeight: 350,
-      }}
+      justifyContent="center"
     >
       <Box
-        sx={{
-          bgcolor: "background.paper",
-          marginBottom: "2rem",
-        }}
-      >
-        <Paper
-          style={{
-            maxHeight: 350,
-            maxWidth: 1300,
-            minWidth: 1300,
-            minHeight: 350,
-            overflowY: "scroll",
-          }}
-        >
-          <>{parse(title)}</>
-          <>{parse(str)}</>
-        </Paper>
-      </Box>
-      <Box
         display={"flex"}
-        flexDirection={"row"}
+        flexDirection={"column"}
         justifyContent={"space-between"}
-        style={{
-          maxHeight: 350,
-          maxWidth: 1300,
-          minWidth: 1300,
-          minHeight: 350,
-        }}
+        alignItems="center"
       >
-        <Box>
-          <CodeEditor roomId={roomId} />
-          <Button variant={"outlined"}>Submit</Button>
-        </Box>
-
         <Box
           sx={{
-            maxWidth: 500,
-            minWidth: 500,
             bgcolor: "background.paper",
+            marginBottom: "2rem",
           }}
         >
-          <Chat list={list}></Chat>
-          <TextField
-            label="Input text here"
-            variant="standard"
-            value={msg}
-            onChange={(e) => setmsg(e.target.value)}
-            sx={{
-              height: 400,
-              maxWidth: 300,
-              minWidth: 300,
-              bgcolor: "background.paper",
-              marginTop: "1rem",
-            }}
-          />
-          <Button
-            variant={"outlined"}
-            onClick={() => {
-              socket.emit("newmsg", {
-                user: username,
-                msg: msg,
-                roomId: roomId,
-              });
-              const obj = { id: list.length, user: "you", msg: msg };
-              setList([...list, obj]);
-
-              setmsg("");
-            }}
-            sx={{
-              marginTop: "1rem",
-              marginLeft: "1rem",
+          <Paper
+            style={{
+              maxHeight: 350,
+              maxWidth: 1300,
+              minWidth: 1300,
+              minHeight: 350,
+              overflowY: "scroll",
             }}
           >
-            Send
-          </Button>
+            <>{parse(title)}</>
+            <>{parse(str)}</>
+          </Paper>
         </Box>
-        <Dialog open={isDialogOpen} onClose={closeDialog}>
-          <DialogTitle>Alert</DialogTitle>
-          <DialogContent>
-            <DialogContentText>Your Friend Left</DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={closeDialog}>Continue Coding by Yourself</Button>
-          </DialogActions>
-          <DialogActions>
-            <Button onClick={backToDifficulty}>
-              Back to Difficulty Selection
+        <Box
+          display={"flex"}
+          flexDirection={"row"}
+          justifyContent={"space-between"}
+          style={{
+            maxWidth: 1300,
+            minWidth: 1300,
+          }}
+        >
+          <Box>
+            <CodeEditor roomId={roomId} />
+            <Button variant={"outlined"}>Submit</Button>
+          </Box>
+
+          <Box
+            sx={{
+              maxWidth: 500,
+              minWidth: 500,
+              bgcolor: "background.paper",
+            }}
+          >
+            <Chat list={list}></Chat>
+            <TextField
+              label="Input text here"
+              variant="standard"
+              value={msg}
+              onChange={(e) => setmsg(e.target.value)}
+              sx={{
+                maxWidth: 300,
+                minWidth: 300,
+                bgcolor: "background.paper",
+                marginTop: "1rem",
+              }}
+            />
+            <Button
+              variant={"outlined"}
+              onClick={() => {
+                socket.emit("newmsg", {
+                  user: username,
+                  msg: msg,
+                  roomId: roomId,
+                });
+                const obj = { id: list.length, user: "you", msg: msg };
+                setList([...list, obj]);
+
+                setmsg("");
+              }}
+              sx={{
+                marginTop: "1rem",
+                marginLeft: "1rem",
+              }}
+            >
+              Send
             </Button>
-          </DialogActions>
-        </Dialog>
+          </Box>
+          <Dialog open={isDialogOpen} onClose={closeDialog}>
+            <DialogTitle>Alert</DialogTitle>
+            <DialogContent>
+              <DialogContentText>Your Friend Left</DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={closeDialog}>Continue Coding by Yourself</Button>
+            </DialogActions>
+            <DialogActions>
+              <Button onClick={backToDifficulty}>
+                Back to Difficulty Selection
+              </Button>
+            </DialogActions>
+          </Dialog>
+        </Box>
       </Box>
-    </Box>
+    </Grid>
   );
 }
 
