@@ -55,7 +55,6 @@ export class AuthService {
     const session = await this.sessionModel
       .findOne({ username: payload.username })
       .exec();
-    console.log(session);
-    return session !== null;
+    return session ?? null;
   }
 }

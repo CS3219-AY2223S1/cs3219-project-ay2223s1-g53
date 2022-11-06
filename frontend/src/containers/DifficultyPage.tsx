@@ -64,7 +64,6 @@ export default function DifficultyPage() {
     let id = 0;
 
     for (let i = 0; i < roomId.length; i++) {
-      console.log(roomId.charCodeAt(i));
       id += roomId.charCodeAt(i);
     }
 
