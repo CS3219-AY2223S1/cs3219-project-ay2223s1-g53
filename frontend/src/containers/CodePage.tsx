@@ -51,8 +51,6 @@ function CodePage() {
   }, [list]);
 
   useEffect(() => {
-    console.log("useffect");
-    console.log(history.state);
     axios
       .get(
         `http://localhost:3005?difficulty=${history.state.difficulty}&seed=${history.state.seed}`

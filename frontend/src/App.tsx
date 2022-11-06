@@ -13,10 +13,19 @@ import SuccessPage from "./containers/SuccessPage";
 import PasswordPage from "./containers/PasswordPage";
 import FailPage from "./containers/FailPage";
 import { useUserContext } from "./hooks/useUserContext";
+import { useEffect } from "react";
+import axios from "axios";
+import { URI_USER_SVC } from "./configs";
 
 function App() {
-  const { username } = useUserContext();
+  const { username, updateUsername } = useUserContext();
 
+  useEffect(() => {
+    const a = axios
+      .get(`${URI_USER_SVC}/auth/session`, { withCredentials: true })
+      .then((res) => updateUsername(res.data.username))
+      .catch((e) => alert(e.response.data.message));
+  }, []);
   return (
     <Box display={"flex"} flexDirection={"column"} padding={"4rem"}>
       <Router>

@@ -1,4 +1,4 @@
-const URI_USER_SVC = process.env.URI_USER_SVC || "http://localhost:3001";
+export const URI_USER_SVC = process.env.URI_USER_SVC || "http://localhost:3001";
 
 export const URL_LOGIN_SVC = URI_USER_SVC + "/auth/login";
 

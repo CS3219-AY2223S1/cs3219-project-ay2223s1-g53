@@ -43,7 +43,7 @@ export class AppController {
     const res = await this.authService.checkSession(req.cookies['jwt']);
 
     if (res) {
-      return { message: 'user is logged in' };
+      return { username: res.username, message: 'user is logged in' };
     } else {
       throw new UnauthorizedException({
         errorCode: 7,
