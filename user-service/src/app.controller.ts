@@ -6,6 +6,7 @@ import {
   UseGuards,
   Res,
   UnauthorizedException,
+  BadRequestException,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { AuthService } from './auth/auth.service';
@@ -19,6 +20,13 @@ export class AppController {
   @UseGuards(LocalAuthGuard)
   @Post('auth/login')
   async login(@Request() req, @Res({ passthrough: true }) res: Response) {
+    const sessionObj = await this.authService.checkSession(req.cookies['jwt']);
+    if (sessionObj) {
+      throw new BadRequestException({
+        errorCode: 8,
+        message: 'user is already logged in',
+      });
+    }
     const resObject = await this.authService.login(req.user);
     res.cookie('jwt', resObject.jwt, { httpOnly: true });
     return { username: resObject.username };
