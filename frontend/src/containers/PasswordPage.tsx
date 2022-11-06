@@ -11,28 +11,54 @@ import {
   Typography,
   InputAdornment,
   IconButton,
+  Modal,
 } from "@mui/material";
 import { useState } from "react";
 import axios from "axios";
-import { URL_CHANGE_SVC } from "../configs";
+import { URI_USER_SVC, URL_CHANGE_SVC } from "../configs";
 import { STATUS_CODE_INCORRECT, STATUS_CODE_UNAUTHORIZED } from "../constants";
 import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
-
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { useUserContext } from "../hooks/useUserContext";
 
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: "150px",
+  height: "inherit",
+  backgroundColor: "white",
+  p: 4,
+};
 function PasswordPage() {
   const [oldPassword, setOldPassword] = useState<string>("");
   const [newPassword, setNewPassword] = useState<string>("");
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
+  const [isWarningOpen, setIsWarningOpen] = useState<boolean>(false);
   const [dialogTitle, setDialogTitle] = useState<string>("");
   const [dialogMsg, setDialogMsg] = useState<string>("");
   const [showPassword, setShowPassword] = useState(false);
   const handleClickShowPassword = () => setShowPassword(!showPassword);
   const handleMouseDownPassword = () => setShowPassword(!showPassword);
+  const { username, updateUsername, setIsLoggedIn } = useUserContext();
 
-  const navigate = useNavigate();
-
+  const handleDeleteAccount = async () => {
+    const a = await axios
+      .post(
+        `${URI_USER_SVC}/users/delete`,
+        { username: username },
+        { withCredentials: true }
+      )
+      .then(() => {
+        updateUsername("");
+      });
+    const b = await axios.get("http://localhost:3001/auth/logout", {
+      withCredentials: true,
+    });
+    updateUsername("");
+    setIsLoggedIn();
+  };
   const unfilledFields = () =>
     setErrorDialog("Make sure all fields are filled up!");
 
@@ -146,7 +172,42 @@ function PasswordPage() {
             </Typography>
           </Button>
         </Box>
+        <p />
 
+        <Button
+          variant="contained"
+          color="error"
+          onClick={() => setIsWarningOpen(true)}
+        >
+          Delete account
+        </Button>
+        <Modal open={isWarningOpen} onClose={() => setIsWarningOpen(false)}>
+          <Box sx={style}>
+            <Typography id="modal-modal-title" variant="h6" component="h2">
+              Delete account?
+            </Typography>
+            <p />
+            <Grid container spacing={2} direction="row">
+              <Grid item xs={6}>
+                <Button
+                  color="error"
+                  variant="contained"
+                  onClick={handleDeleteAccount}
+                >
+                  yes
+                </Button>
+              </Grid>
+              <Grid item xs={6}>
+                <Button
+                  variant="contained"
+                  onClick={() => setIsWarningOpen(false)}
+                >
+                  no
+                </Button>
+              </Grid>
+            </Grid>
+          </Box>
+        </Modal>
         <Dialog open={isDialogOpen} onClose={closeDialog}>
           <DialogTitle>{dialogTitle}</DialogTitle>
           <DialogContent>

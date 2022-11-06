@@ -44,8 +44,8 @@ export class UsersService {
   }
 
   async delete(req) {
-    this.userModel.deleteOne({ username: req.user._doc.username }).exec();
-    return { message: `successfully deleted ${req.user._doc.username}` };
+    this.userModel.deleteOne({ username: req.user.username }).exec();
+    return { message: `successfully deleted ${req.user.username}` };
   }
 
   async changePassword(req) {

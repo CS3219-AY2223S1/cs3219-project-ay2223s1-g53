@@ -1,9 +1,7 @@
 import Mycard from "../components/Mycard";
-
 import { useNavigate } from "react-router-dom";
 import {
   Box,
-  Button,
   Grid,
   Typography,
   Container,
@@ -12,15 +10,16 @@ import {
   Toolbar,
   Menu,
   MenuItem,
-  TextField,
+  Avatar,
+  IconButton,
 } from "@mui/material";
 import styled from "styled-components";
 import { useEffect, useState } from "react";
 // import MyTimer from "../components/MyTimer";
 import { useUserContext } from "../hooks/useUserContext";
-import axios from "axios";
 import { io } from "socket.io-client";
-import { Link } from "react-router-dom";
+import { AccountCircle } from "@mui/icons-material";
+import axios from "axios";
 
 const Separator = styled.span`
   margin-top: 10px;
@@ -31,7 +30,7 @@ export default function DifficultyPage() {
   const [loading, setLoading] = useState<boolean>(false);
   const { username, updateUsername, setIsLoggedIn } = useUserContext();
   const [seconds, setSeconds] = useState<number>(30);
-  const [newPassword, setNewPassword] = useState<string>("");
+  const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
@@ -41,7 +40,19 @@ export default function DifficultyPage() {
   const handleClose = () => {
     setAnchorEl(null);
   };
+  const handleLogout = () => {
+    handleClose();
+    axios.get("http://localhost:3001/auth/logout", {
+      withCredentials: true,
+    });
+    updateUsername("");
+    setIsLoggedIn();
+  };
 
+  const handleSettings = () => {
+    handleClose();
+    navigate("/password");
+  };
   const socket = io("http://localhost:3002", {
     timeout: 10000,
     transports: ["websocket"],
@@ -51,8 +62,6 @@ export default function DifficultyPage() {
     setLoading(true);
     socket.emit("match", { difficulty, username });
   };
-
-  const navigate = useNavigate();
 
   socket.on("matchFail", () => {
     navigate("/fail");
@@ -106,32 +115,18 @@ export default function DifficultyPage() {
               <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                 Welcome, {username}
               </Typography>
-              <Button
-                color="inherit"
-                variant="outlined"
-                onClick={() => {
-                  axios.get("http://localhost:3001/auth/logout", {
-                    withCredentials: true,
-                  });
-                  updateUsername("");
-                  setIsLoggedIn();
-                }}
-                sx={{
-                  marginRight: "2rem",
-                }}
+              <IconButton
+                style={{ color: "black" }}
+                aria-controls={open ? "basic-menu" : undefined}
+                aria-haspopup="true"
+                aria-expanded={open ? "true" : undefined}
+                onClick={handleMenuClick}
               >
-                logout
-              </Button>
+                <Avatar sx={{ width: 32, height: 32 }}>
+                  <AccountCircle />
+                </Avatar>
+              </IconButton>
 
-              <Button
-                color="inherit"
-                id="basic-button"
-                variant="outlined"
-                component={Link}
-                to="/password"
-              >
-                Change Password
-              </Button>
               <Menu
                 id="basic-menu"
                 anchorEl={anchorEl}
@@ -141,17 +136,8 @@ export default function DifficultyPage() {
                   "aria-labelledby": "basic-button",
                 }}
               >
-                <MenuItem>
-                  <TextField
-                    label="New Password"
-                    variant="standard"
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                    sx={{ marginBottom: "1rem" }}
-                    autoFocus
-                  />
-                </MenuItem>
-                <MenuItem onClick={handleClose}>Change Password</MenuItem>
+                <MenuItem onClick={handleSettings}>Settings</MenuItem>
+                <MenuItem onClick={handleLogout}>Logout</MenuItem>
               </Menu>
             </Toolbar>
           </AppBar>

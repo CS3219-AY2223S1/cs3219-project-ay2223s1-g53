@@ -24,7 +24,7 @@ function App() {
     const a = axios
       .get(`${URI_USER_SVC}/auth/session`, { withCredentials: true })
       .then((res) => updateUsername(res.data.username))
-      .catch((e) => alert(e.response.data.message));
+      .catch((e) => e);
   }, []);
   return (
     <Box display={"flex"} flexDirection={"column"} padding={"4rem"}>
