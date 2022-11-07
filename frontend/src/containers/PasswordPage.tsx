@@ -106,14 +106,9 @@ function PasswordPage() {
   return (
     <Grid
       container
-      spacing={4}
       direction="column"
       alignItems="center"
       justifyContent="center"
-      style={{
-        minWidth: 500,
-        minHeight: "75vh",
-      }}
     >
       <Box display={"flex"} flexDirection={"column"} width={"30%"}>
         <Typography variant={"h3"} marginBottom={"2rem"}>
