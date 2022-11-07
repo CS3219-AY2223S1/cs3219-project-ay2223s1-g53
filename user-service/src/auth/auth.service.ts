@@ -53,7 +53,7 @@ export class AuthService {
   async checkSession(jwt: string) {
     const payload: Payload = this.jwtService.decode(jwt) as Payload;
     const session = await this.sessionModel
-      .findOne({ username: payload.username })
+      .findOne({ username: payload?.username })
       .exec();
     return session ?? null;
   }
