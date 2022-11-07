@@ -32,7 +32,11 @@ export default function Chat({ list }: ChatProps) {
           {list.map((item) => {
             return (
               <ListItem key={item.id}>
-                <ListItemText primary={item.msg} secondary={item.user} />
+                <ListItemText
+                  primary={item.msg}
+                  secondary={item.user}
+                  primaryTypographyProps={{ style: { whiteSpace: "normal" } }}
+                />
               </ListItem>
             );
           })}
