@@ -69,6 +69,7 @@ function CodePage() {
 
   useEffect(() => {
     socket.on("msg2", (arg) => {
+      console.log(arg);
       const obj = { id: list.length, user: arg.user, msg: arg.msg };
       setList([...list, obj]);
     });
@@ -87,6 +88,10 @@ function CodePage() {
       direction="column"
       alignItems="center"
       justifyContent="center"
+      style={{
+        height: "100%",
+        width: "100%",
+      }}
     >
       <Box
         display={"flex"}
@@ -102,10 +107,10 @@ function CodePage() {
         >
           <Paper
             style={{
-              maxHeight: 350,
+              maxHeight: 250,
               maxWidth: 1300,
               minWidth: 1300,
-              minHeight: 350,
+              minHeight: 250,
               overflowY: "scroll",
             }}
           >
@@ -120,6 +125,7 @@ function CodePage() {
           style={{
             maxWidth: 1300,
             minWidth: 1300,
+            maxHeight: 1000,
           }}
         >
           <Box>

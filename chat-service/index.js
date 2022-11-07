@@ -19,11 +19,11 @@ io.on("connection", (socket) => {
   const roomId = socket.handshake.query.roomId;
   socket.join(socket.handshake.query.roomId);
   socket.on("newmsg", (data) => {
-    io.to(data.roomId).emit("msg2", data);
+    io.in(data.roomId).emit("msg2", data);
     // send this word out to all sockets connected to this one...
   });
   socket.on("disconnect", () => {
-    io.to(roomId).emit("friendLeft"); // undefined
+    io.in(roomId).emit("friendLeft"); // undefined
   });
 });
 
