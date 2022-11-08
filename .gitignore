@@ -1,0 +1,22 @@
+# frontend
+frontend/node_modules/
+frontend/yarn-error.log
+
+# user service
+user-service/node_modules
+user-service/.env
+
+# matching service
+matching-service/node_modules
+matching-service/.env
+
+# chat service
+chat-service/node_modules
+
+# collab service
+collab-service/node_modules
+collab-service/.env
+
+# question service
+question-service/node_modules
+question-service/.env

@@ -1,0 +1,3 @@
+export const STATUS_CODE_CREATED = 201;
+export const STATUS_CODE_INCORRECT = 400;
+export const STATUS_CODE_UNAUTHORIZED = 401;
